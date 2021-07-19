@@ -1,0 +1,143 @@
+// import log from 'loglevel';
+// import  React, {useState, useEffect, Fragment}  from 'react'
+// import { makeStyles, Typography,TableContainer, Table, TableHead, TableRow, TableCell, Switch, 
+//          TableBody, Button, EditIcon, Select, FormControl, Grid, MenuItem, Box } from '@material-ui/core';
+// import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
+// import { StruttureEventiAPI } from '../../../api/strutture.eventi.api'
+// import { DatePicker, DateTimePicker } from '@material-ui/pickers';
+// import add from 'date-fns/add'
+
+// const _logger = log.getLogger('AbbonamentiUtente');
+
+// const useStyles = makeStyles({
+//     root: {
+//         minHeight: "600px",
+//         position: "relative"
+//     },
+//     table: {
+//         minWidth: 650,
+//     },
+// });
+// /***
+//  * Componente per l'aggiunta di un nuovo abbonamento ad un Utente
+//  */
+// const AbbonamentiUtenteAdd = (props) => {
+//     const classes = useStyles();
+
+//     const idStruttura = props.idStruttura;
+//     const idUtente = props.idUtente;
+//     const [tipologieAbbonamenti, setTipologieAbbonamenti] = useState([]);
+//     const [abbonamentoUtente, setAbbonamentoUtente] = useState({
+//         idTipoAbbonamento: '',
+//         dataInizioValidita: new Date(),
+//         scadenza: null,
+//         ingressiIniziali: null,
+//         importo: null
+//     });
+
+    
+//     useEffect(()=>{
+//         //Recuperiamo le Tipologie di Abbonamento previsti
+//         async function fetchTipiAbbonamenti(idStruttura) {
+//             const data = await StruttureEventiAPI.FetchTipologieAbbonamentiAsync(idStruttura, 1, 50);
+//             _logger.debug(`AbbonamentiUtente->useEffect()->fetchTipiAbbonamenti(${idStruttura}) => ${JSON.stringify(data)}`);
+//             setTipologieAbbonamenti(data ?? []);
+//         }
+//         fetchTipiAbbonamenti(idStruttura);
+//     },[idStruttura, idUtente])
+
+
+
+//     const handleSubmit =  async (values, actions) => {
+//         _logger.debug(`AbbonamentiUtente->FormSubmit() - values: ${JSON.stringify(values)}`);
+//         let payload = Object.assign({}, values);
+//         //if (payload.capienzaMax === '') { payload.capienzaMax = null; }
+//         await StruttureEventiAPI.SaveLocationAsync(idStruttura, payload);
+//         actions.setSubmitting(false); //NOTA: essendo async non è tecnicamente necessaria questa chiamata, la fa Formik implicitamente
+//     }
+
+
+//     async function formValidateAsync(values) {
+//         const errors = {}
+//         if (!values.nome) {
+//             errors.nome = "E' necessario specificare il nome";
+//         }
+
+//         _logger.debug(`AbbonamentiUtente->formValidateAsync() - errors: ${JSON.stringify(errors)}`);
+//         return errors;
+//     }
+
+    
+
+//     return (
+//             <Formik
+//             initialValues={abbonamentoUtente}
+//             enableReinitialize={true}
+//             onSubmit={handleSubmit}
+//             validate={formValidateAsync}
+//         >
+//             {
+//                 (props, form) => (
+//                     <Form onSubmit={props.handleSubmit} autoComplete="off" className={classes.form}>
+//                         <Grid container>
+//                             <Grid item xs={3}>
+//                                 <Field name='idTipoAbbonamento'>
+//                                     {({ field, form }) =>
+//                                         (
+//                                         <Select value={props.values.idTipoAbbonamento}
+//                                                 onChange={idTipoAbb=> form.setFieldValue(field.validoFinoAl, add(props.values.validoDal, {months: tipologieAbbonamenti.find(item => item.id === idTipoAbb)?.durataMesi ?? 0}))}>
+//                                             {
+//                                                 tipologieAbbonamenti?.map(t => (<MenuItem key={t.id} value={t.id}>{t.nome}</MenuItem>))
+//                                             }
+//                                         </Select>
+//                                         )}
+//                                     </Field>
+//                             </Grid>
+//                             <Grid item xs={3}>
+//                                 <Field name='validoDal'>
+//                                     {({ field, form }) =>
+//                                         (
+//                                             <DatePicker name={field.name}
+//                                                 margin="normal"
+//                                                 fullWidth
+//                                                 required
+//                                                 minDate={new Date()}
+//                                                 label='Data Inizio'
+//                                                 value={field.value}
+//                                                 onChange={dateTime => form.setFieldValue(field.name, dateTime, true)}
+//                                                 format="dd MMMM yyyy" />
+//                                         )}
+//                                 </Field>                                
+//                             </Grid>
+//                             <Grid item xs={3}>
+//                                 <Field name='validoFinoAl'>
+//                                     {({ field, form }) =>
+//                                         (
+//                                             <DatePicker name={field.name}
+//                                                 margin="normal"
+//                                                 fullWidth
+//                                                 required
+//                                                 minDate={new Date()}
+//                                                 label='Data Fine'
+//                                                 value={field.value}
+//                                                 onChange={dateTime => form.setFieldValue(field.name, dateTime, true)}
+//                                                 format="dd MMMM yyyy" />
+//                                         )}
+//                                 </Field>                                
+//                             </Grid>
+//                             <Grid item xs={12} style={{ textAlign: "center" }}>
+//                                 <Button size="large" variant="contained"
+//                                     type="submit"
+//                                     className={classes.btnSalva}>Salva</Button>
+//                             </Grid>
+//                         </Grid>
+//                     </Form>
+//                 )
+//             }
+//         </Formik>
+//     )
+
+// }
+
+
+// export default AbbonamentiUtenteAdd;

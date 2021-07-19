@@ -1,0 +1,39 @@
+html {
+    height: 100vh;
+    background-color: #EEEEEE;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;        
+}
+
+body{
+    margin: 0px; /*reset */    
+}
+/* 
+.rd2-cal-header-dayname {
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+.rd2-cal-header-daynum {
+    margin: 0 auto;
+    font-size: 1.1rem;
+    font-weight: 300;
+    height: 30px;
+    margin-bottom: 3px;
+}
+
+.rd2-cal-header-daynum-current {
+    width: 30px;
+    height: 30px;
+    color: #fff;
+    background-color: #0c5ceb;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+}
+
+
+
+.fc-time-grid .fc-slats td {
+    height: 3rem;
+} */
