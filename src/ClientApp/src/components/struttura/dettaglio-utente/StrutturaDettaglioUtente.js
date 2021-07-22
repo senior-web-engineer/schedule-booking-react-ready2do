@@ -1,4 +1,5 @@
 import { Box, Grid, Paper, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import log from 'loglevel';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -6,10 +7,26 @@ import { StruttureUtentiAPI } from '../../../api/strutture.utenti.api';
 import AbbonamentiUtenteSection from './AbbonamentiUtenteSection';
 import CertificatiUtenteSection from './CertificatiUtenteSection';
 import PrenotazioniUtenteSection from './PrenotazioniUtenteSection';
+import InfoIcon from '@material-ui/icons/Info';
+import { Container } from '@material-ui/core';
 
 const _logger = log.getLogger('StrutturaEditEvento')
+const useStyles = makeStyles(theme => ({
+    image:{
+        marginTop: '8px',
+        marginBottom: '8px',
+        width: 'inherit'
+    },
+    paper:{
+        marginTop: '16px',
+    },
+    grid:{
+        padding: '12px'
+    }
+}));
 
 const StrutturaDettaglioUtente = (props) => {
+    const classes = useStyles();
     const idStruttura = props.idStruttura;
     //Recuperiamo i parametri dall'url
     let { idUtente } = useParams();
@@ -55,39 +72,42 @@ const StrutturaDettaglioUtente = (props) => {
 
     return (
         <Fragment>
+        {/* ads */}
+        <Container>
+            <img className={classes.image} src="/images/tinto.png" alt="tinto" />
+        </Container>
         {/* SEZIONE DATI UTENTE */}
-        <Paper>
-            <Box>
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
+        <Paper className={classes.paper}>
+            <Box >
+                <Grid container spacing={3} className={classes.grid}>
+                    <Grid item xs={12} md={1} >
+                    </Grid>
+                    <Grid item xs={12} md={10}>
                         <Grid container alignItems="center" justify="center" direction="column">
                             <Grid item xs={12}>
                                 <Typography variant="h5" fontWeight="Bold">Dati Utente</Typography>
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={1}>
+                        <InfoIcon style={{ fontSize: 40, color: 'grey' }} ></InfoIcon>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
                         <Typography component="div">
                             <Box component="span" fontWeight="fontWeightBold" mr={1}>Nome:</Box>
                             <Box component="span">{utenteStruttura?.nome}</Box>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                         <Typography component="div">
                             <Box component="span" fontWeight="fontWeightBold" mr={1}>Cognome:</Box>
                             <Box component="span">{utenteStruttura?.cognome}</Box>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={12}>
                         <Typography component="div">
                             <Box component="span" fontWeight="fontWeightBold" mr={1}>Nickname:</Box>
                             <Box component="span">{utenteStruttura?.displayName}</Box>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Typography component="div">
-                            <Box component="span" fontWeight="fontWeightBold" mr={1}>Email:</Box>
-                            <Box component="span">{utenteStruttura?.email}</Box>
                         </Typography>
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -96,6 +116,15 @@ const StrutturaDettaglioUtente = (props) => {
                             <Box component="span">{utenteStruttura?.telephoneNumber}</Box>
                         </Typography>
                     </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Typography component="div">
+                            <Box component="span" fontWeight="fontWeightBold" mr={1}>Email:</Box>
+                            <Box component="span">{utenteStruttura?.email}</Box>
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12}></Grid>
+                    <Grid item xs={12} md={12}></Grid>
+                    <Grid item xs={12} md={12}></Grid>
                 </Grid>
             </Box>
         </Paper>
@@ -110,7 +139,9 @@ const StrutturaDettaglioUtente = (props) => {
         <PrenotazioniUtenteSection idStruttura={idStruttura} idUtente={idUtente} prenotazioniConfermate={utenteAssociazione?.appuntamenti} 
                                     prenotazioniNonConfermate={utenteAssociazione?.appuntamentiDaConfermare} waitList = {utenteAssociazione?.appuntamentiInCoda}
                                     abbonamenti={utenteAssociazione?.abbonamenti} reloadHandler={handleAssociazioneChange} />
-
+        <Container>
+            <img className={classes.image} src="/images/tinto.png" alt="tinto" />
+        </Container>
     </Fragment>
     )
 }

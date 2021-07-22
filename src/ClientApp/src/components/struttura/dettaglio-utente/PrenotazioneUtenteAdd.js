@@ -299,7 +299,7 @@ const handleLocationChanged = (location)=>{
                     value={giornoAppuntamento}
                   >
                     {renderDateEventi()}
-                    ))}
+                    {/* ))} */}
                   </Select>
                 )}
                 control={control}
@@ -330,7 +330,7 @@ const handleLocationChanged = (location)=>{
                     value={oraAppuntamento}
                   >
                     {renderOraEventi()}
-                    ))}
+                    {/* ))} */}
                   </Select>
                 )}
                 control={control}
@@ -358,7 +358,7 @@ const handleLocationChanged = (location)=>{
                     value={location}
                   >
                     {renderLocations()}
-                    ))}
+                    {/* ))} */}
                   </Select>
                 )}
                 control={control}

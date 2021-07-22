@@ -4,13 +4,17 @@ import {
     Fade,
     makeStyles,
     Paper,
-    Typography
+    Typography,
+    Button,
+    Grid
 } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
 import log from 'loglevel';
 import React, { Fragment, useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import AbbonamentiUtenteList from './AbbonamentiUtenteList';
 import AbbonamentiUtenteAdd from './AbbonamentoUtenteAdd';
+import { grey } from '@material-ui/core/colors';
 
 const _logger = log.getLogger('AbbonamentiUtenteSection');
 
@@ -24,6 +28,11 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
         justifyContent: 'center',
         textAlign: 'center',
+        display: 'flex'
+    },
+    headerButton: {
+        backgroundColor: 'grey',
+        color: 'white'
     },
     fabAdd:{
         float: 'right',
@@ -58,19 +67,26 @@ const AbbonamentiUtenteSection = (props) => {
 
     return (
         <Paper className={classes.root}>
-             <Box className={classes.headerTitle}>
-                <Typography variant="h6">Abbonamenti</Typography>
-                {!editMode ? 
+             <Box container className={classes.headerTitle}>
+                <Grid xs={12} md={1}>
+                <Button className={classes.headerButton}>
+                    STORICO
+                </Button></Grid>
+                <Grid xs={12} md={10}>
+                <Typography variant="h6">Abbonamenti</Typography></Grid>
+                {/* {!editMode ? 
                     <Fab color="primary" size="small" aria-label="add"
                         className={classes.fabAdd}
                         onClick={(e)=>{setAbbonamentoSelezionato(null); setEditMode(!editMode); _logger.debug(`editMode: ${editMode}`)}}>  
                         <AddIcon />
-                        </Fab> : "" }
+                        </Fab> : "" } */}
+                <Grid xs={12} md={1}><InfoIcon style={{ fontSize: 40, color: 'grey' }} ></InfoIcon></Grid>
             </Box>
             
             
             {!editMode ? 
-                <AbbonamentiUtenteList idStruttura={idStruttura} idUtente={idUtente} abbonamenti={abbonamenti} onChangeHandler={handleAbbonamentiChange} onEditAbbonamento={handleEditAbbonamento}/> :
+                <AbbonamentiUtenteList idStruttura={idStruttura} idUtente={idUtente} abbonamenti={abbonamenti} abbonamentoUtente={abbonamentoSelezionato}
+                    onChangeHandler={handleAbbonamentiChange} onEditAbbonamento={handleEditAbbonamento}/> :
                 <AbbonamentiUtenteAdd idStruttura={idStruttura} idUtente={idUtente} abbonamentoUtente={abbonamentoSelezionato} 
                                     onCancelHandler={()=>{setEditMode(false);}}
                                     onChangeHandler={handleAbbonamentiChange}/>

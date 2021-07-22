@@ -3,9 +3,10 @@ import {
     Fab,
     makeStyles,
     Paper,
-    Typography
+    Typography, Button, Grid
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import InfoIcon from '@material-ui/icons/Info';
 import log from 'loglevel';
 import React, { useState } from 'react';
 import CertificatiUtenteList from './CertificatiUtenteList';
@@ -16,13 +17,18 @@ const _logger = log.getLogger('AbbonamentiUtenteSection');
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(1),
-        margin: theme.spacing(4, 0, 0, 0),
+        margin: theme.spacing(3, 0, 0, 0),
         minHeight: 130
     },
     headerTitle: {
         flexGrow: 1,
         justifyContent: 'center',
         textAlign: 'center',
+        display: 'flex'
+    },
+    headerButton: {
+        backgroundColor: 'grey',
+        color: 'white'
     },
     fabAdd:{
         float: 'right',
@@ -58,19 +64,26 @@ const CertificatiUtenteSection = (props) => {
 
     return (
         <Paper className={classes.root}>
-             <Box className={classes.headerTitle}>
-                <Typography variant="h6">Certificato medico</Typography>
-                {!editMode ? 
+             <Box container className={classes.headerTitle}>
+             <Grid xs={12} md={1}>
+                <Button className={classes.headerButton}>
+                    STORICO
+                </Button></Grid>
+                <Grid xs={12} md={10}>
+                <Typography variant="h6">Certificato medico</Typography></Grid>
+                {/* {!editMode ? 
                     <Fab color="primary" size="small" aria-label="add"
                         className={classes.fabAdd}
                         onClick={(e)=>{setCertificatoSelezionato(null); setEditMode(!editMode); _logger.debug(`editMode: ${editMode}`)}}>  
                         <AddIcon />
-                        </Fab> : "" }
+                        </Fab> : "" } */}
+                <Grid xs={12} md={1}><InfoIcon style={{ fontSize: 40, color: 'grey' }} ></InfoIcon></Grid>
             </Box>
             
             
             {!editMode ? 
-                <CertificatiUtenteList idStruttura={idStruttura} idUtente={idUtente} certificati={certificati} onChangeHandler={handleCertificatiChange} onEditHandler={handleEditCertificato}/> :
+                <CertificatiUtenteList idStruttura={idStruttura} idUtente={idUtente} certificati={certificati} certificatoUtente={certificatoSelezionato} 
+                    onChangeHandler={handleCertificatiChange} onEditHandler={handleEditCertificato}/> :
                 <CertificatiUtenteAdd idStruttura={idStruttura} idUtente={idUtente} certificatoUtente={certificatoSelezionato} 
                                     onCancelHandler={()=>{setEditMode(false);}}
                                     onChangeHandler={handleCertificatiChange}/>

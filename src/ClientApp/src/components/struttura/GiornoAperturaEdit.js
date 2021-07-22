@@ -85,8 +85,12 @@ const GiornoAperturaEdit = (props) => {
 
   function formatTime(date) {
     _logger.debug(`formatTime: Tentativo di conversione del valore [${JSON.stringify(date)}] in una stringa...`);
-    if (date && typeof date === "string") {
-      const d = date.length > 8 ? parseISO(date) : parseISO("2020-01-01T" + date);
+    // use dateStr:string in if-condition and remove (") character from JSON stringify func.
+    // @khoa
+    let dateStr = JSON.stringify(date);
+    dateStr = dateStr.replaceAll("\"","");
+    if (dateStr &&  dateStr !== "null") {
+      const d = dateStr.length > 10 ? parseISO(dateStr) : parseISO("2020-01-01T" + date);
       _logger.debug(`formatTime: Data ricostruita: [${JSON.stringify(d)}]`);
       return dfnsFormat(d, "HH:mm");
     } else {

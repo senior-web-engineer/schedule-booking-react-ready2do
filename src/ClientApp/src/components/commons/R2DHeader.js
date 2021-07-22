@@ -27,7 +27,8 @@ const useStyles = makeStyles(theme => ({
     appBar: {
         //  paddingTop: '8px',
         marginBottom: '8px',
-        height: '140px'
+        height: '140px',
+        backgroundColor: 'white'
     },
     logo: {
         width: '306px',
