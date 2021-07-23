@@ -25,6 +25,8 @@ import { Link } from "react-router-dom";
 import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
 import dfnsITLocale from "date-fns/locale/it";
 import dfnsFormat from "date-fns/format";
+import format from "date-fns/format";
+import { it as itLocal } from "date-fns/locale";
 import parseISO from "date-fns/parseISO";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -50,6 +52,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#000000",
     marginRight: "10px",
   },
+  headerButton: {
+    backgroundColor: "grey",
+    color: "white",
+  },
+  grid: {
+      padding: '12px'
+  }
 }));
 
 const StyledTableCell = withStyles((theme) => ({
@@ -65,41 +74,36 @@ const StyledTableCell = withStyles((theme) => ({
 
 export default (props) => {
   const classes = useStyles();
-  const [isLoadingAbbonamenti, setIsLoadingAbbonamenti] = React.useState(true);
-  const [isLoadingClienti, setIsLoadingClienti] = React.useState(true);
-  const [abbonamenti, setAbbonamenti] = React.useState(null);
-  const [clienti, setClienti] = React.useState(null);
+  const [fetchInProgress, setFetchInProgress] = React.useState(false);
+  const [appuntamenti, setAppuntamenti] = React.useState(null);
+  const [gridData, setGridData] = React.useState([]); //Dati renderizzati dalla griglia
 
   React.useEffect(() => {
-    async function fetchClientiFollowed() {
-      const data = await UsersAPI.GetCurrentUserClientiFollowedAsync();
-      setClienti(data);
-      setIsLoadingClienti(false);
+    async function fetchAppuntamenti() {
+      const data = await UsersAPI.GetCurrentUserAppuntamentiAsync();
+
+      setAppuntamenti(data);
+      console.log(data);
+      setFetchInProgress(false);
     }
-    async function fetchAbbonamenti() {
-      const data = await UsersAPI.GetCurrentUserAbbonamentiAsync();
-      if (data) {
-        setAbbonamenti(data);
-      } else {
-        setAbbonamenti([]);
-      }
-      setIsLoadingAbbonamenti(false);
-    }
-    fetchClientiFollowed();
-    fetchAbbonamenti();
+    setFetchInProgress(true);
+    fetchAppuntamenti();
   }, []);
 
   const isLoading = () => {
-    return isLoadingClienti || isLoadingAbbonamenti;
+    return fetchInProgress;
   };
 
   // convert date format
   // @khoa
   function dateFormat(dateStr) {
     let date = new Date(dateStr);
+
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let dt = date.getDate();
+    let hh = date.getHours();
+    let mm = date.getMinutes();
 
     if (dt < 10) {
       dt = "0" + dt;
@@ -107,88 +111,44 @@ export default (props) => {
     if (month < 10) {
       month = "0" + month;
     }
-
-    return dt + "/" + month + "/" + year;
-  }
-
-  function renderAbbonamentoForCliente(idCliente) {
-    _logger.debug(
-      `UtenteStruttureSeguite()->renderAbbonamentoForCliente(idCliente: ${idCliente}) - abbonamenti: ${JSON.stringify(
-        abbonamenti
-      )}`
-    );
-    const abbonamentiCliente = abbonamenti
-      .filter((v) => v.idCliente === idCliente)
-      .sort((a, b) => {
-        //Ordiniamo in ordine DECRESCENTE di scadenza
-        if (a.scadenza > b.scadenza) {
-          return -1;
-        } else if (a.scadenza < b.scadenza) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    _logger.debug(`abbonamentiCliente: ${JSON.stringify(abbonamentiCliente)}`);
-    if (abbonamentiCliente && abbonamentiCliente.length > 0) {
-      if (abbonamentiCliente[0].scadenza < new Date())
-        return <span>Scaduto</span>;
-      else {
-        return (
-          <span>
-            {dfnsFormat(parseISO(abbonamentiCliente[0].scadenza), "P", {
-              locale: dfnsITLocale,
-            })}
-          </span>
-        );
-      }
-    } else {
-      return <span>Nessun Abbonamento</span>;
+    if (hh < 10) {
+      hh = "0" + hh;
     }
+    if (mm < 10) {
+      mm = "0" + mm;
+    }
+    if (!dt || !month || !year || !hh || !mm) return "";
+    return dt + "/" + month + "/" + year + "-" + hh + ":" + mm;
   }
 
   function renderClienti() {
-    if (clienti && clienti.length > 0) {
+    if (appuntamenti && appuntamenti.length > 0) {
       return (
         <TableContainer>
           <Table className={classes.table} aria-label="Elenco locations">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Nome Struttura</StyledTableCell>
+                <StyledTableCell align="center">Nome Lezione</StyledTableCell>
                 <StyledTableCell align="center">
-                  Data Iscrizione
+                  Data e Ora Lezione
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  Stato Abbonamento{" "}
-                </StyledTableCell>
+                <StyledTableCell align="center">Stato Lezione</StyledTableCell>
                 <StyledTableCell align="center">Impostazioni</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {clienti.map((m) => (
+              {appuntamenti.map((m) => (
                 <TableRow key={m.id}>
                   <StyledTableCell component="th" scope="row">
                     {m.nome}
                   </StyledTableCell>
+                  <StyledTableCell align="center">{m}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {/* {dfnsFormat(parseISO(m.dataFollowing), "P p", {
-                      locale: dfnsITLocale,
-                    })} */}
                     {dateFormat(parseISO(m.dataFollowing))}
                   </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {/* {renderAbbonamentoForCliente(m.idCliente)} */}
-                    {m}
-                  </StyledTableCell>
+                  <StyledTableCell align="center">{m}</StyledTableCell>
                   <StyledTableCell align="right">
-                    {/* <Button
-                      size="small"
-                      variant="outlined"
-                      component={Link}
-                      to={`/${m.urlRoute}/`}
-                    >
-                      Vai
-                    </Button> */}
                     <Fab
                       size="small"
                       variant="round"
@@ -220,7 +180,9 @@ export default (props) => {
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={12} md={1}></Grid>
+        <Grid item xs={12} md={1}>
+          <Button className={classes.headerButton}>STORICO</Button>
+        </Grid>
         <Grid item xs={12} md={10}>
           <Grid
             container
@@ -230,7 +192,7 @@ export default (props) => {
           >
             <Grid item xs={12}>
               <Typography className={classes.title} align="center" variant="h5">
-                I Miei Preferiti
+                I Mie Prenotazioni
               </Typography>
             </Grid>
           </Grid>
