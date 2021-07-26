@@ -1,7 +1,7 @@
 import log from "loglevel";
 import cloneDeep from "lodash.clonedeep";
 import React, { useState, Fragment } from "react";
-import {useSelector} from 'react-redux';
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { Grid, Typography, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,19 +11,59 @@ import parseISO from "date-fns/parseISO";
 
 const _logger = log.getLogger("GiornoAperturaEdit");
 
+const useStyles = makeStyles(() => ({
+  dalle: {
+    display: "flex",
+    borderRight: "1px solid black",
+    padding: "0px !important",
+  },
+  cell1: {
+    // margin: '0px 2px',
+    textAlign: "center",
+    padding: "12px",
+  },
+  cell: {
+    // margin: '0px 2px',
+    textAlign: "center",
+    padding: "12px",
+    background: "gainsboro",
+  },
+  select: {
+    borderLeft: "1px solid black",
+    background: "gainsboro",
+    textAlign: "center",
+  },
+  select1: {
+    borderLeft: "1px solid black",
+    textAlign: "center",
+  },
+}));
+
 const GiornoAperturaEdit = (props) => {
   const giorno = props.giorno || "";
+  const backgroundColor = props.background;
   const viewMode = props.viewMode || "view";
-  const [tipoOrario, setTipoOrario] = useState(props.tipoOrario ? props.tipoOrario : 2);
+  const [tipoOrario, setTipoOrario] = useState(
+    props.tipoOrario ? props.tipoOrario : 2
+  );
   const changeHandler = props.onChangeHandler;
-  const [mattina, setOrarioMattina] = useState(props.mattina ? props.mattina : { inizio: null, fine: null });
-  const [pomeriggio, setOrarioPomeriggio] = useState(props.pomeriggio ? props.pomeriggio : { inizio: null, fine: null });
+  const [mattina, setOrarioMattina] = useState(
+    props.mattina ? props.mattina : { inizio: null, fine: null }
+  );
+  const [pomeriggio, setOrarioPomeriggio] = useState(
+    props.pomeriggio ? props.pomeriggio : { inizio: null, fine: null }
+  );
+  const styles = useStyles();
 
   const isInEdit = () => {
     return viewMode === "edit";
   };
 
-  _logger.debug(`GiornoAperturaEdit->giorno: ${giorno} - mattina: ${JSON.stringify(props.mattina)} - pomeriggio: ${JSON.stringify(props.pomeriggio)}`);
+  _logger.debug(
+    `GiornoAperturaEdit->giorno: ${giorno} - mattina: ${JSON.stringify(
+      props.mattina
+    )} - pomeriggio: ${JSON.stringify(props.pomeriggio)}`
+  );
 
   function handleChangeTipoOrario(event) {
     setTipoOrario(event.target.value);
@@ -53,7 +93,13 @@ const GiornoAperturaEdit = (props) => {
   }
 
   function handleChanges(giorno, mattina, pomeriggio, tipoOrario) {
-    _logger.debug(`GiornoAperturaEdit->handleChanges - giorno: ${JSON.stringify(giorno)}, mattina: ${JSON.stringify(mattina)} - pomeriggio: ${JSON.stringify(pomeriggio)} - tipoOrario: ${tipoOrario}`);
+    _logger.debug(
+      `GiornoAperturaEdit->handleChanges - giorno: ${JSON.stringify(
+        giorno
+      )}, mattina: ${JSON.stringify(mattina)} - pomeriggio: ${JSON.stringify(
+        pomeriggio
+      )} - tipoOrario: ${tipoOrario}`
+    );
     if (changeHandler) {
       let result = {
         mattina,
@@ -84,13 +130,20 @@ const GiornoAperturaEdit = (props) => {
   }
 
   function formatTime(date) {
-    _logger.debug(`formatTime: Tentativo di conversione del valore [${JSON.stringify(date)}] in una stringa...`);
+    _logger.debug(
+      `formatTime: Tentativo di conversione del valore [${JSON.stringify(
+        date
+      )}] in una stringa...`
+    );
     // use dateStr:string in if-condition and remove (") character from JSON stringify func.
     // @khoa
     let dateStr = JSON.stringify(date);
-    dateStr = dateStr.replaceAll("\"","");
-    if (dateStr &&  dateStr !== "null") {
-      const d = dateStr.length > 10 ? parseISO(dateStr) : parseISO("2020-01-01T" + date);
+    dateStr = dateStr.replaceAll('"', "");
+    if (dateStr && dateStr !== "null") {
+      const d =
+        dateStr.length > 10
+          ? parseISO(dateStr)
+          : parseISO("2020-01-01T" + date);
       _logger.debug(`formatTime: Data ricostruita: [${JSON.stringify(d)}]`);
       return dfnsFormat(d, "HH:mm");
     } else {
@@ -104,17 +157,29 @@ const GiornoAperturaEdit = (props) => {
 
   /** Tenta di converteri il valore in input in una Date se è una stringa, assumendo che contenga solo l'ora nel formato HH:mm */
   const ensureDate = (val) => {
-    _logger.debug(`ensureDate: Tentativo di conversione del valore [${JSON.stringify(val)}] in una data...`);
+    _logger.debug(
+      `ensureDate: Tentativo di conversione del valore [${JSON.stringify(
+        val
+      )}] in una data...`
+    );
     if (!val) return null;
     if (val instanceof Date) return val;
     let d = "2020-01-01T" + (val.length < 7 ? val + ":00" : val); //assumiamo che sia una stringa con l'ora
-    _logger.debug(`ensureDate: Tentativo di conversione del valore [${d}] in una data...`);
+    _logger.debug(
+      `ensureDate: Tentativo di conversione del valore [${d}] in una data...`
+    );
     return parseISO(d);
   };
 
   return (
     <Fragment>
-      <Grid item xs={3}>
+      <Grid
+        item
+        xs={3}
+        className={
+          backgroundColor === "gainsboro" ? styles.select : styles.select1
+        }
+      >
         {isInEdit() ? (
           <Select value={tipoOrario} onChange={handleChangeTipoOrario}>
             <MenuItem value="Spezzato">Spezzato</MenuItem>
@@ -127,34 +192,86 @@ const GiornoAperturaEdit = (props) => {
           <Typography>{tipoOrario}</Typography>
         )}
       </Grid>
-      <Grid item xs={1}>
-        {isInEdit() ? (
-          <TimePicker clearable autoOk ampm={false} value={ensureDate(mattina.inizio)} onChange={(value) => handleChangeOra(value, true, true)} />
-        ) : (
-          <Typography variant="h6">{formatTime(mattina.inizio)}</Typography>
-        )}
-      </Grid>
-      <Grid item xs={1}>
-        {isInEdit() ? (
-          <TimePicker clearable autoOk ampm={false} value={ensureDate(mattina.fine)} onChange={(value) => handleChangeOra(value, true, false)} />
-        ) : (
-          <Typography variant="h6">{formatTime(mattina.fine)}</Typography>
-        )}
-      </Grid>
-      <Grid item xs={1}></Grid>
-      <Grid item xs={1}>
-        {isInEdit() ? (
-          <TimePicker clearable autoOk ampm={false} value={ensureDate(pomeriggio.inizio)} onChange={(value) => handleChangeOra(value, false, true)} />
-        ) : (
-          <Typography variant="h6">{formatTime(pomeriggio.inizio)}</Typography>
-        )}
-      </Grid>
-      <Grid item xs={1}>
-        {isInEdit() ? (
-          <TimePicker clearable autoOk ampm={false} value={ensureDate(pomeriggio.fine)} onChange={(value) => handleChangeOra(value, false, false)} />
-        ) : (
-          <Typography variant="h6">{formatTime(pomeriggio.fine)}</Typography>
-        )}
+      <Grid item xs={6} className={styles.dalle}>
+        <Grid
+          item
+          xs={3}
+          className={
+            backgroundColor === "gainsboro" ? styles.cell1 : styles.cell
+          }
+        >
+          {isInEdit() ? (
+            <TimePicker
+              clearable
+              autoOk
+              ampm={false}
+              value={ensureDate(mattina.inizio)}
+              onChange={(value) => handleChangeOra(value, true, true)}
+            />
+          ) : (
+            <Typography variant="h6">{formatTime(mattina.inizio)}</Typography>
+          )}
+        </Grid>
+        <Grid
+          item
+          xs={3}
+          className={
+            backgroundColor === "gainsboro" ? styles.cell : styles.cell1
+          }
+        >
+          {isInEdit() ? (
+            <TimePicker
+              clearable
+              autoOk
+              ampm={false}
+              value={ensureDate(mattina.fine)}
+              onChange={(value) => handleChangeOra(value, true, false)}
+            />
+          ) : (
+            <Typography variant="h6">{formatTime(mattina.fine)}</Typography>
+          )}
+        </Grid>
+        {/* <Grid item xs={1}></Grid> */}
+        <Grid
+          item
+          xs={3}
+          className={
+            backgroundColor === "gainsboro" ? styles.cell1 : styles.cell
+          }
+        >
+          {isInEdit() ? (
+            <TimePicker
+              clearable
+              autoOk
+              ampm={false}
+              value={ensureDate(pomeriggio.inizio)}
+              onChange={(value) => handleChangeOra(value, false, true)}
+            />
+          ) : (
+            <Typography variant="h6">
+              {formatTime(pomeriggio.inizio)}
+            </Typography>
+          )}
+        </Grid>
+        <Grid
+          item
+          xs={3}
+          className={
+            backgroundColor === "gainsboro" ? styles.cell : styles.cell1
+          }
+        >
+          {isInEdit() ? (
+            <TimePicker
+              clearable
+              autoOk
+              ampm={false}
+              value={ensureDate(pomeriggio.fine)}
+              onChange={(value) => handleChangeOra(value, false, false)}
+            />
+          ) : (
+            <Typography variant="h6">{formatTime(pomeriggio.fine)}</Typography>
+          )}
+        </Grid>
       </Grid>
     </Fragment>
   );

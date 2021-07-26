@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     marginTop: "33px",
     marginBottom: "20px",
+    padding: "10px",
   },
   title: {
     paddingTop: "10px",
@@ -161,7 +162,7 @@ export default (props) => {
                 <StyledTableCell align="center">
                   Stato Abbonamento{" "}
                 </StyledTableCell>
-                <StyledTableCell align="center">Impostazioni</StyledTableCell>
+                <StyledTableCell align="right">Impostazioni</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -178,7 +179,7 @@ export default (props) => {
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {/* {renderAbbonamentoForCliente(m.idCliente)} */}
-                    {m}
+                    {m.ragioneSociale}
                   </StyledTableCell>
                   <StyledTableCell align="right">
                     {/* <Button

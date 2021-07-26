@@ -84,6 +84,22 @@ async function GetCurrentUserAppuntamentiAsync(startDateISO, endDateISO, pageSiz
 }
 
 /**
+ * get utenti/waitlist
+ */
+ async function GetCurrentUserWaitListAsync(startDateISO, endDateISO){
+    const url = `${config.BaseAPIPath}/utenti/waitlist?dtInizio=${startDateISO}&dtFine=${endDateISO}`;
+    _logger.debug(`GetCurrentUserWaitListAsync->Invoking API: [GET] ${url}`);
+    try {
+        var response = await axios.get(url, await APIUtils.addBearerToken());
+        appInsights.trackTrace({message:`GetCurrentUserWaitListAsync->Invoking API: [GET] ${url}`, properties:{url, data:response?.data}})
+        return response.data ?? [];
+    } catch (exc) {
+        appInsights.trackException({exception: exc, severityLevel: SeverityLevel.Error, properties:{url}});
+        throw(exc); //risolleviamo l'eccezione al chiamante        
+    }
+}
+
+/**
  * Aggiorna il profilo dell'utente
  * @param {*} profilo 
  */
@@ -120,5 +136,6 @@ export const UsersAPI = {
     GetCurrentUserAbbonamentiAsync,
     GetCurrentUserAppuntamentiAsync,
     SaveUserProfiloAsync,
-    NotifyNewUser
+    NotifyNewUser,
+    GetCurrentUserWaitListAsync,
 }

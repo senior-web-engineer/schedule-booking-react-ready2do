@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     marginTop: "33px",
     marginBottom: "20px",
+    padding: "10px",
   },
   title: {
     paddingTop: "10px",
@@ -57,8 +58,8 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
   },
   grid: {
-      padding: '12px'
-  }
+    padding: "12px",
+  },
 }));
 
 const StyledTableCell = withStyles((theme) => ({
@@ -80,10 +81,10 @@ export default (props) => {
 
   React.useEffect(() => {
     async function fetchAppuntamenti() {
-      const data = await UsersAPI.GetCurrentUserAppuntamentiAsync();
+      //   const data = await UsersAPI.GetCurrentUserAppuntamentiAsync('20190301000000','20220831000000');
+      const data = await UsersAPI.GetCurrentUserWaitListAsync();
 
       setAppuntamenti(data);
-      console.log(data);
       setFetchInProgress(false);
     }
     setFetchInProgress(true);
@@ -134,20 +135,29 @@ export default (props) => {
                   Data e Ora Lezione
                 </StyledTableCell>
                 <StyledTableCell align="center">Stato Lezione</StyledTableCell>
-                <StyledTableCell align="center">Impostazioni</StyledTableCell>
+                <StyledTableCell align="right">Impostazioni</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {appuntamenti.map((m) => (
                 <TableRow key={m.id}>
                   <StyledTableCell component="th" scope="row">
-                    {m.nome}
+                    {m.ragioneSocialeCliente}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{m}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {dateFormat(parseISO(m.dataFollowing))}
+                    {m.schedule.title}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{m}</StyledTableCell>
+                  <StyledTableCell align="center">
+                    {dateFormat(parseISO(m.schedule.dataOraInizio))}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {m.dataCancellazione
+                      ? "Cancellata"
+                      : Date.parse(parseISO(m.schedule.dataOraInizio)) >
+                        Date.parse(new Date())
+                      ? "Attiva"
+                      : "Passata"}
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     <Fab
                       size="small"

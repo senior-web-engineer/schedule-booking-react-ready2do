@@ -61,6 +61,24 @@ const useStyles = makeStyles((theme) => ({
   contentBox: {
     marginTop: "10px",
   },
+  dalleHeader: {
+    display: "flex",
+    borderTop: "1px solid black",
+    borderRight: "1px solid black",
+    padding: "0px !important",
+  },
+  cellTitle: {
+    textAlign: "center",
+    padding: "12px",
+  },
+  cellTitleBorder: {
+    borderTop: "1px solid black",
+    borderLeft: "1px solid black",
+    textAlign: "center",
+  },
+  bottom: {
+    borderTop: "1px solid black",
+  },
 }));
 
 const OrarioAperturaEdit = (props) => {
@@ -70,11 +88,10 @@ const OrarioAperturaEdit = (props) => {
     domenica: { mattina: null, pomeriggio: null, tipoOrario: 1 },
   };
 
-  
   const [viewMode, setViewMode] = useState(props.viewMode || "view");
   const orarioStore = useSelector(StruttureSelectors.getOrarioApertura);
   const [orario, setOrario] = useState(orarioStore);
-  _logger.log(`OrarioAperturaEdit-Orario: ${JSON.stringify(orario)}`)
+  _logger.log(`OrarioAperturaEdit-Orario: ${JSON.stringify(orario)}`);
   const styles = useStyles();
   const dispatch = useDispatch();
 
@@ -140,7 +157,7 @@ const OrarioAperturaEdit = (props) => {
         },
         pomeriggio: {
           inizio: dateToTimeString(day?.pomeriggio?.inizio),
-          fine: dateToTimeString(day?.pomeriggio?.fine)
+          fine: dateToTimeString(day?.pomeriggio?.fine),
         },
       };
     };
@@ -157,9 +174,8 @@ const OrarioAperturaEdit = (props) => {
         sabato: formatday(orario?.sabato),
         domenica: formatday(orario?.domenica),
       };
-      const action = StruttureActionsCreator.updateStrutturaOrarioApertura(
-        payload
-      );
+      const action =
+        StruttureActionsCreator.updateStrutturaOrarioApertura(payload);
       _logger.debug(
         `OrarioAperturaEdit->Salvataggio nuovo orario apertura - Dispatching action: ${JSON.stringify(
           action
@@ -190,38 +206,54 @@ const OrarioAperturaEdit = (props) => {
     _logger.debug(`OrarioAperturaEdit->render() - ${JSON.stringify(orario)}`);
     return (
       <Grid container spacing={3}>
+        <Grid item xs={2}></Grid>
+        <Grid item xs={9}></Grid>
+        <Grid item xs={1}></Grid>
         {/* Header */}
         <Grid item xs={2}></Grid>
-        <Grid item xs={3}>
+        <Grid item xs={3} className={styles.cellTitleBorder}>
           Tipo di Orario
         </Grid>
-        <Grid item xs={1}>
-          Dalle
-        </Grid>
-        <Grid item xs={1}>
-          Alle
+        <Grid item xs={6} className={styles.dalleHeader}>
+          <Grid
+            item
+            xs={3}
+            className={styles.cellTitle}
+            style={{ background: "gainsboro" }}
+          >
+            Dalle
+          </Grid>
+          <Grid item xs={3} className={styles.cellTitle}>
+            Alle
+          </Grid>
+          {/* <Grid item xs={1}></Grid> */}
+          <Grid
+            item
+            xs={3}
+            className={styles.cellTitle}
+            style={{ background: "gainsboro" }}
+          >
+            Dalle
+          </Grid>
+          <Grid item xs={3} className={styles.cellTitle}>
+            Alle
+          </Grid>
         </Grid>
         <Grid item xs={1}></Grid>
-        <Grid item xs={1}>
-          Dalle
-        </Grid>
-        <Grid item xs={1}>
-          Alle
-        </Grid>
-        <Grid item xs={2}></Grid>
         {/* LUN-VEN */}
         <Grid item xs={2}>
           LUN-VEN
         </Grid>
         <GiornoAperturaEdit
           giorno="lunedi"
+          background="gainsboro"
           tipoOrario={orario?.lunedi?.tipoOrario}
           mattina={orario?.lunedi?.mattina}
           pomeriggio={orario?.lunedi?.pomeriggio}
           viewMode={viewMode}
           onChangeHandler={handleDayChange}
         ></GiornoAperturaEdit>
-        <Grid item xs={2}></Grid>
+        <Grid item xs={1}></Grid>
         {/* SABATO */}
         <Grid item xs={2}>
           SABATO
@@ -234,20 +266,24 @@ const OrarioAperturaEdit = (props) => {
           viewMode={viewMode}
           onChangeHandler={handleDayChange}
         ></GiornoAperturaEdit>
-        <Grid item xs={2}></Grid>
+        <Grid item xs={1}></Grid>
         {/* DOMENICA */}
         <Grid item xs={2}>
           DOMENICA
         </Grid>
         <GiornoAperturaEdit
           giorno="domenica"
+          background="gainsboro"
           tipoOrario={orario?.domenica?.tipoOrario}
           mattina={orario?.domenica?.mattina}
           pomeriggio={orario?.domenica?.pomeriggio}
           viewMode={viewMode}
           onChangeHandler={handleDayChange}
         ></GiornoAperturaEdit>
+        <Grid item xs={1}></Grid>
         <Grid item xs={2}></Grid>
+        <Grid item xs={9} className={styles.bottom}></Grid>
+        <Grid item xs={1}></Grid>
       </Grid>
     );
   }
