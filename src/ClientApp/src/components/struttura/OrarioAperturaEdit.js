@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cellTitle: {
     textAlign: "center",
-    padding: "12px",
+    padding: "15px",
   },
   cellTitleBorder: {
     borderTop: "1px solid black",
@@ -82,11 +82,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const OrarioAperturaEdit = (props) => {
-  const ORARIO_EMPTY = {
-    lunedi: { mattina: null, pomeriggio: null, tipoOrario: 1 },
-    sabato: { mattina: null, pomeriggio: null, tipoOrario: 1 },
-    domenica: { mattina: null, pomeriggio: null, tipoOrario: 1 },
-  };
+  // const ORARIO_EMPTY = {
+  //   lunedi: { mattina: null, pomeriggio: null, tipoOrario: 1 },
+  //   sabato: { mattina: null, pomeriggio: null, tipoOrario: 1 },
+  //   domenica: { mattina: null, pomeriggio: null, tipoOrario: 1 },
+  // };
 
   const [viewMode, setViewMode] = useState(props.viewMode || "view");
   const orarioStore = useSelector(StruttureSelectors.getOrarioApertura);

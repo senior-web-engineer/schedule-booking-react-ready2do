@@ -20,12 +20,12 @@ const useStyles = makeStyles(() => ({
   cell1: {
     // margin: '0px 2px',
     textAlign: "center",
-    padding: "12px",
+    padding: "15px",
   },
   cell: {
     // margin: '0px 2px',
     textAlign: "center",
-    padding: "12px",
+    padding: "15px",
     background: "gainsboro",
   },
   select: {
@@ -44,7 +44,7 @@ const GiornoAperturaEdit = (props) => {
   const backgroundColor = props.background;
   const viewMode = props.viewMode || "view";
   const [tipoOrario, setTipoOrario] = useState(
-    props.tipoOrario ? props.tipoOrario : 2
+    props.tipoOrario ? props.tipoOrario : ''
   );
   const changeHandler = props.onChangeHandler;
   const [mattina, setOrarioMattina] = useState(
@@ -106,11 +106,9 @@ const GiornoAperturaEdit = (props) => {
         pomeriggio,
         tipoOrario,
       };
-      if (changeHandler) {
         changeHandler(giorno, result);
       }
     }
-  }
 
   function decodeTipoOrario(idTipoOrario) {
     switch (idTipoOrario) {
@@ -166,7 +164,7 @@ const GiornoAperturaEdit = (props) => {
     if (val instanceof Date) return val;
     let d = "2020-01-01T" + (val.length < 7 ? val + ":00" : val); //assumiamo che sia una stringa con l'ora
     _logger.debug(
-      `ensureDate: Tentativo di conversione del valore [${d}] in una data...`
+      `ensureDate: Tentativo di conversione del valore [${d}] in una data...d`
     );
     return parseISO(d);
   };

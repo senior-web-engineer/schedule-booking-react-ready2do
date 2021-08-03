@@ -17,10 +17,11 @@ const _logger = log.getLogger("UtenteProfiloEdit");
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minHeight: "400px",
+    // minHeight: "400px",
     position: "relative",
     marginBottom: "20px",
     marginTop: "16px",
+    padding: '10px'
   },
   form: {
     padding: "20px",
@@ -41,13 +42,13 @@ const useStyles = makeStyles((theme) => ({
     color: "red",
     fontSize: "0.7rem",
   },
-  title: {
+  title: {  
     paddingTop: "10px",
     marginBottom: "10px",
     fontWeight: "700",
   },
   grid: {
-    padding: "12px",
+    padding: "15px",
   },
   InsertButton: {
     float: "right",
@@ -288,8 +289,8 @@ export default (props) => {
                 <Box component="span">{profilo?.email}</Box>
               </Typography>
             </Grid>
-            <Grid item xs={12} md={12}></Grid>
-            <Grid item xs={12} md={12}></Grid>
+            {/* <Grid item xs={12} md={12}></Grid>
+            <Grid item xs={12} md={12}></Grid> */}
             <Grid item xs={12} md={11}></Grid>
             <Grid item xs={12} md={1}>
               <Button
@@ -326,7 +327,7 @@ export default (props) => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={1}>
-          <InfoIcon style={{ fontSize: 40, color: "grey" }}></InfoIcon>
+          <InfoIcon style={{ fontSize: 40, color: "grey", float: "right" }}></InfoIcon>
         </Grid>
       </Grid>
       {isFetchingInProgress() ? <R2DLoader /> : renderForm()}

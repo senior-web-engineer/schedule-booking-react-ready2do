@@ -4,10 +4,10 @@ import { Box, makeStyles, Modal } from '@material-ui/core';
 
 const useStyles = makeStyles({
     boxLoader: {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
+        // position: "absolute",
+        // top: "50%",
+        // left: "50%",
+        // transform: "translate(-50%, -50%)",
         textAlign: "center",
     }
 });

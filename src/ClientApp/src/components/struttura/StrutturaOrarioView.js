@@ -120,7 +120,7 @@ const StrutturaOrarioView = (props) => {
   const renderOrario = (orario) => {
     return (
       <div>
-        {orario && orario && orario?.lunedi ? renderDay("Lun-Ven:", orario?.lunedi) : null}
+        {orario && orario?.lunedi ? renderDay("Lun-Ven:", orario?.lunedi) : null}
         {/* {orario && orario?.martedi ? renderDay("Lunedì:", orario?.lunedi) : ""}
         {orario && orario?.mercoledi ? renderDay("Lunedì:", orario?.lunedi) : ""}
         {orario && orario?.giovedi ? renderDay("Lunedì: ", orario?.lunedi) : ""}

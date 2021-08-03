@@ -70,7 +70,7 @@ async function GetCurrentUserAbbonamentiAsync() {
 /**
  * Ritorna gli appuntamenti attivi per l'utente corrente
  */
-async function GetCurrentUserAppuntamentiAsync(startDateISO, endDateISO, pageSize, pageNumber){
+async function GetCurrentUserAppuntamentiAsync(startDateISO = '19990101000000', endDateISO = '20300101000000', pageSize = 100, pageNumber = 1){
     const url = `${config.BaseAPIPath}/utenti/appuntamenti?dtInizio=${startDateISO}&dtFine=${endDateISO}&pageSize=${pageSize}&pageNumber=${pageNumber}`;
     _logger.debug(`GetCurrentUserAppuntamentiAsync->Invoking API: [GET] ${url}`);
     try {

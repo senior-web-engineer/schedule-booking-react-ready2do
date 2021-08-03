@@ -34,7 +34,7 @@ const _logger = log.getLogger("UtenteStruttureSeguite");
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minHeight: "400px",
+    // minHeight: "400px",
     position: "relative",
     marginTop: "33px",
     marginBottom: "20px",
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "700",
   },
   box: {
-    padding: "12px",
+    padding: "15px",
     textAlign: "center",
   },
   FAB: {
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
   },
   grid: {
-    padding: "12px",
+    padding: "15px",
   },
 }));
 
@@ -125,7 +125,7 @@ export default (props) => {
   function renderClienti() {
     if (appuntamenti && appuntamenti.length > 0) {
       return (
-        <TableContainer>
+        <TableContainer style={{padding:"12px", width: 'auto'}}>
           <Table className={classes.table} aria-label="Elenco locations">
             <TableHead>
               <TableRow>
@@ -208,7 +208,7 @@ export default (props) => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={1}>
-          <InfoIcon style={{ fontSize: 40, color: "grey" }}></InfoIcon>
+          <InfoIcon style={{ fontSize: 40, color: "grey", float: "right" }}></InfoIcon>
         </Grid>
       </Grid>
       {isLoading() ? <R2DLoader /> : renderClienti()}
