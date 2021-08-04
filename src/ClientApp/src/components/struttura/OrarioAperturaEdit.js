@@ -1,5 +1,5 @@
 import log from "loglevel";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import cloneDeep from "lodash.clonedeep";
 import PropTypes from "prop-types";
@@ -90,7 +90,9 @@ const OrarioAperturaEdit = (props) => {
 
   const [viewMode, setViewMode] = useState(props.viewMode || "view");
   const orarioStore = useSelector(StruttureSelectors.getOrarioApertura);
-  const [orario, setOrario] = useState(orarioStore);
+  _logger.log(`OrarioAperturaEdit-OrarioStore: ${JSON.stringify(orarioStore)}`);
+  let [orario, setOrario] = useState(orarioStore);
+  if (orario === undefined) orario = orarioStore;
   _logger.log(`OrarioAperturaEdit-Orario: ${JSON.stringify(orario)}`);
   const styles = useStyles();
   const dispatch = useDispatch();
@@ -99,44 +101,44 @@ const OrarioAperturaEdit = (props) => {
 
   _logger.debug("OrarioAperturaEdit...");
 
-  function getOrario(giorno) {
-    _logger.error(`getOrario(${giorno}) -> ${JSON.stringify(orario)}`);
-    switch (giorno) {
-      case "lunedi":
-        return orario
-          ? orario.lunedi
-          : {
-              lunedi: {
-                mattina: { inizio: null, fine: null },
-                pomeriggio: { inizio: null, fine: null },
-                tipoOrario: 1,
-              },
-            };
-      case "sabato":
-        return orario
-          ? orario.sabato
-          : {
-              sabato: {
-                mattina: { inizio: null, fine: null },
-                pomeriggio: { inizio: null, fine: null },
-                tipoOrario: 1,
-              },
-            };
-      case "domenica":
-        return orario
-          ? orario.domenica
-          : {
-              domenica: {
-                mattina: { inizio: null, fine: null },
-                pomeriggio: { inizio: null, fine: null },
-                tipoOrario: 1,
-              },
-            };
-      default:
-        log.debug(`getOrario(${giorno}) -> RETURN: NULL`);
-        return null;
-    }
-  }
+  // function getOrario(giorno) {
+  //   _logger.error(`getOrario(${giorno}) -> ${JSON.stringify(orario)}`);
+  //   switch (giorno) {
+  //     case "lunedi":
+  //       return orario
+  //         ? orario.lunedi
+  //         : {
+  //             lunedi: {
+  //               mattina: { inizio: null, fine: null },
+  //               pomeriggio: { inizio: null, fine: null },
+  //               tipoOrario: 1,
+  //             },
+  //           };
+  //     case "sabato":
+  //       return orario
+  //         ? orario.sabato
+  //         : {
+  //             sabato: {
+  //               mattina: { inizio: null, fine: null },
+  //               pomeriggio: { inizio: null, fine: null },
+  //               tipoOrario: 1,
+  //             },
+  //           };
+  //     case "domenica":
+  //       return orario
+  //         ? orario.domenica
+  //         : {
+  //             domenica: {
+  //               mattina: { inizio: null, fine: null },
+  //               pomeriggio: { inizio: null, fine: null },
+  //               tipoOrario: 1,
+  //             },
+  //           };
+  //     default:
+  //       log.debug(`getOrario(${giorno}) -> RETURN: NULL`);
+  //       return null;
+  //   }
+  // }
 
   const dateToTimeString = (date) => {
     _logger.debug(`dateToTimeString: ${JSON.stringify(date)}`);
@@ -200,6 +202,7 @@ const OrarioAperturaEdit = (props) => {
     newOrario[giorno] = newValue;
     //Cambiamo lo stato
     setOrario(newOrario);
+    _logger.log(`OrarioAperturaEdit-OrarioSetNew: ${JSON.stringify(orario)}`);
   };
 
   function render() {

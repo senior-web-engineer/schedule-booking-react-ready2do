@@ -1,6 +1,6 @@
 import log from "loglevel";
 import cloneDeep from "lodash.clonedeep";
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { Grid, Typography, Select, MenuItem } from "@material-ui/core";
@@ -44,7 +44,7 @@ const GiornoAperturaEdit = (props) => {
   const backgroundColor = props.background;
   const viewMode = props.viewMode || "view";
   const [tipoOrario, setTipoOrario] = useState(
-    props.tipoOrario ? props.tipoOrario : ''
+    props.tipoOrario ? props.tipoOrario : ""
   );
   const changeHandler = props.onChangeHandler;
   const [mattina, setOrarioMattina] = useState(
@@ -53,6 +53,17 @@ const GiornoAperturaEdit = (props) => {
   const [pomeriggio, setOrarioPomeriggio] = useState(
     props.pomeriggio ? props.pomeriggio : { inizio: null, fine: null }
   );
+
+  useEffect(() => {
+    setTipoOrario(props.tipoOrario);
+  }, [props.tipoOrario]);
+  useEffect(() => {
+    setOrarioMattina(props.mattina);
+  }, [props.mattina]);
+  useEffect(() => {
+    setOrarioPomeriggio(props.pomeriggio);
+  }, [props.pomeriggio]);
+
   const styles = useStyles();
 
   const isInEdit = () => {
@@ -66,13 +77,14 @@ const GiornoAperturaEdit = (props) => {
   );
 
   function handleChangeTipoOrario(event) {
-    setTipoOrario(event.target.value);
-    handleChanges(giorno, mattina, pomeriggio, tipoOrario);
+    let tipo = event.target.value;
+    setTipoOrario(tipo);
+    handleChanges(giorno, mattina, pomeriggio, tipo);
   }
 
   function handleChangeOra(newValue, isMattina, isInizio) {
-    let localMattina = cloneDeep(mattina);
-    let localPomeriggio = cloneDeep(pomeriggio);
+    let localMattina = mattina ? cloneDeep(mattina) : {};
+    let localPomeriggio = pomeriggio ? cloneDeep(pomeriggio) : {};
 
     if (isMattina) {
       if (isInizio) {
@@ -106,9 +118,9 @@ const GiornoAperturaEdit = (props) => {
         pomeriggio,
         tipoOrario,
       };
-        changeHandler(giorno, result);
-      }
+      changeHandler(giorno, result);
     }
+  }
 
   function decodeTipoOrario(idTipoOrario) {
     switch (idTipoOrario) {
@@ -136,8 +148,8 @@ const GiornoAperturaEdit = (props) => {
     // use dateStr:string in if-condition and remove (") character from JSON stringify func.
     // @khoa
     let dateStr = JSON.stringify(date);
-    dateStr = dateStr.replaceAll('"', "");
     if (dateStr && dateStr !== "null") {
+      dateStr = dateStr.replaceAll('"', "");
       const d =
         dateStr.length > 10
           ? parseISO(dateStr)
@@ -203,11 +215,11 @@ const GiornoAperturaEdit = (props) => {
               clearable
               autoOk
               ampm={false}
-              value={ensureDate(mattina.inizio)}
-              onChange={(value) => handleChangeOra(value, true, true)}
+              value={ensureDate(mattina?.inizio)}
+              onChange={(value?) => handleChangeOra(value, true, true)}
             />
           ) : (
-            <Typography variant="h6">{formatTime(mattina.inizio)}</Typography>
+            <Typography variant="h6">{formatTime(mattina?.inizio)}</Typography>
           )}
         </Grid>
         <Grid
@@ -222,11 +234,11 @@ const GiornoAperturaEdit = (props) => {
               clearable
               autoOk
               ampm={false}
-              value={ensureDate(mattina.fine)}
-              onChange={(value) => handleChangeOra(value, true, false)}
+              value={ensureDate(mattina?.fine)}
+              onChange={(value?) => handleChangeOra(value, true, false)}
             />
           ) : (
-            <Typography variant="h6">{formatTime(mattina.fine)}</Typography>
+            <Typography variant="h6">{formatTime(mattina?.fine)}</Typography>
           )}
         </Grid>
         {/* <Grid item xs={1}></Grid> */}
@@ -242,12 +254,12 @@ const GiornoAperturaEdit = (props) => {
               clearable
               autoOk
               ampm={false}
-              value={ensureDate(pomeriggio.inizio)}
-              onChange={(value) => handleChangeOra(value, false, true)}
+              value={ensureDate(pomeriggio?.inizio)}
+              onChange={(value?) => handleChangeOra(value, false, true)}
             />
           ) : (
             <Typography variant="h6">
-              {formatTime(pomeriggio.inizio)}
+              {formatTime(pomeriggio?.inizio)}
             </Typography>
           )}
         </Grid>
@@ -263,11 +275,11 @@ const GiornoAperturaEdit = (props) => {
               clearable
               autoOk
               ampm={false}
-              value={ensureDate(pomeriggio.fine)}
-              onChange={(value) => handleChangeOra(value, false, false)}
+              value={ensureDate(pomeriggio?.fine)}
+              onChange={(value?) => handleChangeOra(value, false, false)}
             />
           ) : (
-            <Typography variant="h6">{formatTime(pomeriggio.fine)}</Typography>
+            <Typography variant="h6">{formatTime(pomeriggio?.fine)}</Typography>
           )}
         </Grid>
       </Grid>
