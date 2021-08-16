@@ -20,6 +20,7 @@ import {
   RadioGroup,
   Radio,
   CircularProgress,
+  Paper
 } from "@material-ui/core";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
@@ -276,6 +277,7 @@ const R2DEditEventoForm = (props) => {
 
   const renderForm = () => {
     return (
+      <Paper>
       <Formik initialValues={evento} enableReinitialize={true} onSubmit={handleFormSubmmit}>
         {(props, form) => (
           <Form onSubmit={props.handleSubmit} autoComplete="off" className={classes.form} onKeyDown={onKeyDown}>
@@ -604,6 +606,7 @@ const R2DEditEventoForm = (props) => {
           </Form>
         )}
       </Formik>
+      </Paper>
     );
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /**
  * Componente che renderizza i Tabs con le varie location e per ciascuna location presenta il rispettivo calnedario
  */
@@ -12,7 +13,7 @@ const _logger = log.getLogger('R2DCalendariContainer')
 
 const useStyles = makeStyles(theme => ({
     TabContainer: {
-        marginTop: "10px"
+        // marginTop: "10px"
     }
 }));
 
@@ -46,7 +47,7 @@ export default  (props) => {
         _logger.debug(`R2DCalendariContainer->renderTabs() - locations: ${JSON.stringify(locations)}`);
         return (
             <Paper className={classes.TabContainer}>
-                <Tabs variant="fullWidth" value={selectedTab} onChange={handleChange}   >
+                {/* <Tabs variant="fullWidth" value={selectedTab} onChange={handleChange}   >
                     {
                         locations.map((location, index) => {
                             return (
@@ -54,7 +55,7 @@ export default  (props) => {
                             )
                         })
                     }
-                </Tabs>
+                </Tabs> */}
                 {
                     renderMode === 'view' ? 
                     <StrutturaCalendarView idStruttura={idStruttura} idLocation={locations[selectedTab].id} urlRoute={urlRoute} />

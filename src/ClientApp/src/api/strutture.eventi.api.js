@@ -72,6 +72,11 @@ async function PrenotaEventoAsync(idStruttura, idEvento, appuntamento) {
     await axios.post(url, appuntamento, await APIUtils.addBearerToken());
 }
 
+async function PresenzaEventoAsync(idStruttura, idEvento, idAppuntamento, presence) {
+    const url = `${config.APIServer}/api/clienti/${idStruttura}/schedules/${idEvento}/appuntamenti/${idAppuntamento}/presence?presence=${presence}`;
+    await axios.post(url, await APIUtils.addBearerToken());
+}
+
 async function AnnullaPrenotazioneAsync(idStruttura, idEvento){
     const url = `${config.APIServer}/api/clienti/${idStruttura}/schedules/${idEvento}/appuntamenti`;
     await axios.delete(url, await APIUtils.addBearerToken());
@@ -221,6 +226,7 @@ export const StruttureEventiAPI = {
     SaveEventoAsync,
     FetchAppuntamentiAsync,
     PrenotaEventoAsync,
+    PresenzaEventoAsync,
     AnnullaPrenotazioneAsync,
     FetchLocationSingleAsync,
     SaveLocationAsync,

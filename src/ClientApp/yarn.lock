@@ -10074,6 +10074,11 @@
   "resolved" "https://registry.npmjs.org/react-hook-form/-/react-hook-form-6.13.1.tgz"
   "version" "6.13.1"
 
+"react-image-file-resizer@^0.4.7":
+  "integrity" "sha512-Dak7Ecrd6WEV5LjqoRYFI49ASn7eB1VTlrw6dri9HeIMS6aJang4nli6q5xeckEMY+7QwgqgWqAQD5tgkm4bJg=="
+  "resolved" "https://registry.npmjs.org/react-image-file-resizer/-/react-image-file-resizer-0.4.7.tgz"
+  "version" "0.4.7"
+
 "react-images-upload@^1.2.8":
   "integrity" "sha512-d5mhAE0BfkLTlG5MLvKVw+q76LL8r5easgWW0TTBvXD8n6HXeLMZLwCuPiOibY1a3NRMXI4AnM1r34dqLOBjng=="
   "resolved" "https://registry.npmjs.org/react-images-upload/-/react-images-upload-1.2.8.tgz"

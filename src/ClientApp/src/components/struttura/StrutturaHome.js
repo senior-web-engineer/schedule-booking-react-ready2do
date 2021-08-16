@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     // height: "300px",
     float: "left",
+    borderRadius: "0px",
+    boxShadow: "none",
   },
   logo: {
     //display:"inline",
@@ -50,6 +52,8 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "270px",
     // paddingLeft: "15px"
     padding: "15px",
+    borderRadius: "0px",
+    boxShadow: "none",
   },
   image: {
     marginTop: "8px",
@@ -113,6 +117,9 @@ const useStyles = makeStyles((theme) => ({
 
   calendarContainer: {
     marginTop: "10px",
+    borderRadius: "0px",
+    boxShadow: "none",
+    border: "1px solid",
   },
 
   mapContainer: {
@@ -120,6 +127,9 @@ const useStyles = makeStyles((theme) => ({
     width: "672px",
     height: "400px",
     float: "left",
+    borderRadius: "0px",
+    boxShadow: "none",
+    border: "1px solid",
   },
 
   addressContainer: {
@@ -127,6 +137,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px",
     paddingLeft: "10px",
     height: "400px",
+    borderRadius: "0px",
+    boxShadow: "none",
   },
 
   addressContainerBox: {
@@ -143,16 +155,7 @@ export default (props) => {
   const images = useSelector(StruttureSelectors.getImages);
   const struttureSeguite = useSelector(UserSelectors.getStruttureSeguite) ?? [];
   const [locationsIsLoading, setLocationsIsLoading] = useState(true);
-  const description = `GYROTONIC® EUR è un’oasi di benessere dove combattere lo stress del lavoro e della vita quotidiana
-    ottenendo la perfetta forma fisica. Rilassati e goditi un’ora di allenamento personalizzato in un ambiente
-    sano e confortevole1`;
-  const description2 = `
-    Il Gyrotonic consiste in una serie di esercizi basati sui principi chiave di yoga, nuoto, danza e tai-chi.
-    Questi esercizi vengono eseguiti con il supporto di speciali attrezzature (Pulley Tower, Jumping Stretching
-    Board, Leg Extension Unit, Archway, Gyrotoner) e la guida costante di un Personal Trainer.
-    Corpo tonico, pancia piatta, postura corretta, gambe leggere e allungate, miglioramento della capacità
-    polmonare, della circolazione sanguigna e delle capacità motorie sono solo alcuni dei benefici che il
-    metodo dona alla persona.`;
+
   //NOTA: Ho il sospetto che le immagini vengano scaricate più volte del necessario
   useEffect(() => {
     _logger.debug("StrutturaHome->useEffect()");
@@ -233,9 +236,8 @@ export default (props) => {
         </Paper>
         <Paper md={9} className={classes.descriptionBox}>
           <Box className={classes.descriptionBoxHeader}>
-            {/* <Typography className="descriptionBoxTitle" variant="h5">Benvenuti a {anagraficaStruttura.nome}</Typography> */}
             <Typography className="descriptionBoxTitle" variant="h5">
-              Benvenuti a GYROTONIC ® EUR
+              Benvenuti a {anagraficaStruttura.nome}
             </Typography>
 
             {/* TODO: Gestire il pulsane segui / non seguire in base allo stato dell'utente*/}
@@ -260,13 +262,8 @@ export default (props) => {
             )}
           </Box>
           <Box className={classes.descriptionBoxText}>
-            {/* <Typography variant="body1">{anagraficaStruttura.descrizione}</Typography> */}
-            <Typography variant="body2" gutterBottom>
-              {description}
-            </Typography>
-            <br />
-            <Typography variant="body2" gutterBottom>
-              {description2}
+            <Typography variant="body2">
+              {anagraficaStruttura.descrizione}
             </Typography>
           </Box>
         </Paper>
@@ -309,37 +306,34 @@ export default (props) => {
         </Paper>
       </Grid>
       {anagraficaStruttura.latitudine === undefined ? (
-            <CircularProgress></CircularProgress>
-          ) : (
-      <Grid item xs={12}>
-
-        <Paper className={classes.mapContainer}>
-
+        <CircularProgress></CircularProgress>
+      ) : (
+        <Grid item xs={12}>
+          <Paper className={classes.mapContainer}>
             <StrutturaMap
               lat={anagraficaStruttura.latitudine}
               lng={anagraficaStruttura.longitudine}
             ></StrutturaMap>
-         
-        </Paper>
-        <Paper className={classes.addressContainer}>
-          <Box
-            display="flex"
-            className={classes.addressContainerBox}
-            flexDirection="column"
-            alignItems="stretch"
-            alignContent="space-between"
-          >
-            <StrutturaOrarioView
-              flex={1}
-              struttura={anagraficaStruttura}
-            ></StrutturaOrarioView>
-            <StrutturaContattiView
-              struttura={anagraficaStruttura}
-            ></StrutturaContattiView>
-          </Box>
-        </Paper>
-
-      </Grid>         )}
+          </Paper>
+          <Paper className={classes.addressContainer}>
+            <Box
+              display="flex"
+              className={classes.addressContainerBox}
+              flexDirection="column"
+              alignItems="stretch"
+              alignContent="space-between"
+            >
+              <StrutturaOrarioView
+                flex={1}
+                struttura={anagraficaStruttura}
+              ></StrutturaOrarioView>
+              <StrutturaContattiView
+                struttura={anagraficaStruttura}
+              ></StrutturaContattiView>
+            </Box>
+          </Paper>
+        </Grid>
+      )}
       <Container>
         <img className={classes.image} src="/images/tinto.png" alt="tinto" />
       </Container>

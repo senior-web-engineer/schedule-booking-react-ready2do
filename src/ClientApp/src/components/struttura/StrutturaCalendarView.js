@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import * as log from 'loglevel';
 import React, { useEffect, useState, Fragment } from 'react'
 import FullCalendar from '@fullcalendar/react'
@@ -110,11 +111,12 @@ export default (props) => {
                 initialView="timeGridWeek"
                 initialDate={periodo.startDate}
                 plugins={[dayGridPlugin, interactionPlugin]}
-                headerToolbar={{
-                    left: 'today',
-                    center: 'title',
-                    right: 'prev,next'
-                }}
+                // headerToolbar={{
+                //     left: 'today',
+                //     center: 'title',
+                //     right: 'prev,next'
+                // }}
+                headerToolbar={false}
                 locale={itLocale}
                 weekends={true}
                 slotDuration="01:00:00"

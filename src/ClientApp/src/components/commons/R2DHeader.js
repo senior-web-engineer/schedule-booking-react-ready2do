@@ -28,25 +28,27 @@ const useStyles = makeStyles(theme => ({
         //  paddingTop: '8px',
         marginBottom: '8px',
         height: '140px',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        boxShadow: 'none'
     },
     logo: {
         width: '306px',
+        maxWidth: '55%',
         height: '126px',
         marginTop: '6px',
         marginLeft: '20px'
     },
     iconBox: {
-        marginRight: "20px"
+        margin: "0px 10px"
     },
     headerIcon: {
         color: headerTextColor,
     },
     headerMenu:{
-        color: headerTextColor
+        color: headerTextColor,
     },
     headerMenuItem:{
-        color: headerTextColor
+        color: headerTextColor,
     },
     loginBox: {
         marginRight: "5px"
@@ -152,7 +154,7 @@ export default function R2DHeader() {
 
     return (
         <AppBar position="static" className={classes.appBar}>
-            <Box display="flex" justifyContent="space-between">
+            <Box display="flex" justifyContent="space-between" >
                 <img className={classes.logo} src="/images/logo.png" alt="logo" />
                 <Box alignSelf="flex-end">
                 <AzureAD provider={authProvider} reduxStore={getStore()}>

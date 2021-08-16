@@ -27,3 +27,6 @@
 .fc-time-grid .fc-slats td {
     height: 3rem;
 }
+ .fc-timegrid-slot-label {
+    display:none;
+}
