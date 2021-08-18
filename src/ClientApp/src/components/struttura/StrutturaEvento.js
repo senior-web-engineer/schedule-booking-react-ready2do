@@ -1,9 +1,11 @@
+/* eslint-disable import/no-anonymous-default-export */
 import log from "loglevel";
 import React, { useEffect, useState } from "react";
 import R2DEditEventoForm from "../editEvento/R2DEditEventoForm";
+import SubscriberList from "../editEvento/SubscriberList";
 import * as qs from "query-string";
 import { useParams, useLocation } from "react-router-dom";
-import { Paper } from "@material-ui/core";
+import { Paper, Container } from "@material-ui/core";
 import { authProvider } from "../../authProvider";
 import { getStore } from "../../store/reduxStore";
 
@@ -14,6 +16,7 @@ import { useSelector } from "react-redux";
 import { StruttureEventiAPI } from "../../api/strutture.eventi.api";
 import differenceInMinutes from "date-fns/differenceInMinutes";
 import parseISO from "date-fns/parseISO";
+import { Fragment } from "react";
 
 const _logger = log.getLogger("StrutturaEvento");
 
@@ -67,13 +70,14 @@ export default (props) => {
   const renderEvento = () => {
     // if(!evento) return null;
     if (isOwnerStruttura()) {
-      if (
-        evento &&
-        differenceInMinutes(parseISO(new Date(), evento.dataOraInizio)) > -5
-      ) {
-        // 5 minuti
-      } else {
-        return (
+      // if (
+      //   evento &&
+      //   differenceInMinutes(parseISO(new Date(), evento.dataOraInizio)) > -5
+      // ) {
+      //   // 5 minuti
+      // } else {
+      return (
+        <Fragment>
           <R2DEditEventoForm
             idStruttura={idStruttura}
             idEvento={idEvento} //TODO: Passare direttamente l'evento
@@ -81,8 +85,24 @@ export default (props) => {
             idLocation={queryString?.lid ?? -1}
             allDay={queryString?.allDay ?? false}
           />
-        );
-      }
+
+          <Container style={{ marginTop: "33px" }}>
+            <img
+              style={{ width: "inherit" }}
+              src="/images/tinto.png"
+              alt="tinto"
+            />
+          </Container>
+          {idEvento !== -1 && (
+            <SubscriberList
+              idStruttura={idStruttura}
+              idEvento={idEvento}
+              removable={evento?.dataOraInizio}
+            />
+          )}
+        </Fragment>
+      );
+      // }
     } else {
       return (
         <StrutturaEventoPrenotazione
@@ -101,28 +121,25 @@ export default (props) => {
    *  - se l'utente non è autenticato oppure non è un gestore della struttura, viene visualizzata la pagina di registrazione / cancellazione
    */
   return (
-    <Paper>
-      <AzureAD provider={authProvider} reduxStore={getStore()}>
-        {({ login, logout, authenticationState, error, accountInfo }) => {
-          switch (authenticationState) {
-            case AuthenticationState.Authenticated:
-              _logger.debug(
-                `StrutturaEvento->AuthenticationState.Authenticated`
-              );
-              return renderEvento();
-            default:
-              _logger.debug(
-                `StrutturaEvento->NOT AuthenticationState.Authenticated`
-              );
-              return (
-                <StrutturaEventoPrenotazione
-                  idStruttura={idStruttura}
-                  idEvento={idEvento}
-                />
-              );
-          }
-        }}
-      </AzureAD>
-    </Paper>
+    // <Paper>
+    <AzureAD provider={authProvider} reduxStore={getStore()}>
+      {({ login, logout, authenticationState, error, accountInfo }) => {
+        switch (authenticationState) {
+          case AuthenticationState.Authenticated:
+            _logger.debug(`StrutturaEvento->AuthenticationState.Authenticated`);
+            return renderEvento();
+          default:
+            _logger.debug(
+              `StrutturaEvento->NOT AuthenticationState.Authenticated`
+            );
+            return (
+              <StrutturaEventoPrenotazione
+                idStruttura={idStruttura}
+                idEvento={idEvento}
+              />
+            );
+        }
+      }}
+    </AzureAD>
   );
 };

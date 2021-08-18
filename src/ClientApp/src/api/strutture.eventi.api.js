@@ -74,7 +74,7 @@ async function PrenotaEventoAsync(idStruttura, idEvento, appuntamento) {
 
 async function PresenzaEventoAsync(idStruttura, idEvento, idAppuntamento, presence) {
     const url = `${config.APIServer}/api/clienti/${idStruttura}/schedules/${idEvento}/appuntamenti/${idAppuntamento}/presence?presence=${presence}`;
-    await axios.post(url, await APIUtils.addBearerToken());
+    await axios.put(url, presence, await APIUtils.addBearerToken());
 }
 
 async function AnnullaPrenotazioneAsync(idStruttura, idEvento){

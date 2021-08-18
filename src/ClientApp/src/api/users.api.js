@@ -70,8 +70,9 @@ async function GetCurrentUserAbbonamentiAsync() {
 /**
  * Ritorna gli appuntamenti attivi per l'utente corrente
  */
-async function GetCurrentUserAppuntamentiAsync(startDateISO = '19990101000000', endDateISO = '20300101000000', pageSize = 100, pageNumber = 1){
-    const url = `${config.BaseAPIPath}/utenti/appuntamenti?dtInizio=${startDateISO}&dtFine=${endDateISO}&pageSize=${pageSize}&pageNumber=${pageNumber}`;
+async function GetCurrentUserAppuntamentiAsync(startDateISO = '19990101000000', endDateISO = '20300101000000', pageSize = 100, pageNumber = 1, text?){
+    const url1 = `${config.BaseAPIPath}/utenti/appuntamenti?dtInizio=${startDateISO}&dtFine=${endDateISO}&pageSize=${pageSize}&pageNumber=${pageNumber}`;
+    const url = (text)?url1+`&text=${text}`:url1;
     _logger.debug(`GetCurrentUserAppuntamentiAsync->Invoking API: [GET] ${url}`);
     try {
         var response = await axios.get(url, await APIUtils.addBearerToken());
@@ -86,7 +87,7 @@ async function GetCurrentUserAppuntamentiAsync(startDateISO = '19990101000000', 
 /**
  * get utenti/waitlist
  */
- async function GetCurrentUserWaitListAsync(startDateISO, endDateISO){
+ async function GetCurrentUserWaitListAsync(startDateISO = '19990101000000', endDateISO = '20300101000000'){
     const url = `${config.BaseAPIPath}/utenti/waitlist?dtInizio=${startDateISO}&dtFine=${endDateISO}`;
     _logger.debug(`GetCurrentUserWaitListAsync->Invoking API: [GET] ${url}`);
     try {

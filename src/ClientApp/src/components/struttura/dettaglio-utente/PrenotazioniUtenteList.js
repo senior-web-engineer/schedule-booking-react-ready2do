@@ -87,7 +87,7 @@ const PrenotazioniUtenteList = (props) => {
       mm = "0" + mm;
     }
     if (!dt || !month || !year || !hh || !mm) return "";
-    return dt + "/" + month + "/" + year + "-" + hh + ":" + mm;
+    return dt + "/" + month + "/" + year + " - " + hh + ":" + mm;
   }
 
   const handleEditPrenotazione = (event, idPrenotazione) => {

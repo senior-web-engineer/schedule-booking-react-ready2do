@@ -1,8 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import log from "loglevel";
-import React from "react";
+import React, { useState } from "react";
 import appInsights from "../../applicationInsights";
 import { UsersAPI } from "../../api/users.api";
+import { StruttureEventiAPI } from "../../api/strutture.eventi.api";
 import {
   Grid,
   Paper,
@@ -17,6 +18,9 @@ import {
   Typography,
   Box,
   Fab,
+  FormControl,
+  FormControlLabel,
+  Switch,
 } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -27,6 +31,7 @@ import dfnsITLocale from "date-fns/locale/it";
 import dfnsFormat from "date-fns/format";
 import format from "date-fns/format";
 import { it as itLocal } from "date-fns/locale";
+import differenceInMinutes from "date-fns/differenceInMinutes";
 import parseISO from "date-fns/parseISO";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -60,6 +65,11 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     padding: "15px",
   },
+  btnDelete: {
+    // backgroundColor: "#E31F4F",
+    // color: "white",
+    // margin: "auto",
+  },
 }));
 
 const StyledTableCell = withStyles((theme) => ({
@@ -74,6 +84,10 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default (props) => {
+  const idStruttura = props.idStruttura;
+  const idEvento = props.idEvento;
+  const removable = props.removable;
+  const [reloadNeeded, setReloadNeeded] = useState(false);
   const classes = useStyles();
   const [fetchInProgress, setFetchInProgress] = React.useState(false);
   const [appuntamenti, setAppuntamenti] = React.useState(null);
@@ -81,15 +95,25 @@ export default (props) => {
 
   React.useEffect(() => {
     async function fetchAppuntamenti() {
-      //   const data = await UsersAPI.GetCurrentUserAppuntamentiAsync('20190301000000','20220831000000');
-      const data = await UsersAPI.GetCurrentUserWaitListAsync();
-
+      _logger.debug(
+        `subscriberlist->useEffect()->fetchAppuntamenti() - Fetching Event (${idStruttura}, ${idEvento})`
+      );
+      let data = await StruttureEventiAPI.FetchAppuntamentiAsync(
+        idStruttura,
+        idEvento
+      );
+      _logger.debug(
+        `subscriberlist->useEffect->fetchAppuntamenti(): Event Fetched: ${JSON.stringify(
+          data
+        )}`
+      );
       setAppuntamenti(data);
       setFetchInProgress(false);
+      setReloadNeeded(false);
     }
     setFetchInProgress(true);
     fetchAppuntamenti();
-  }, []);
+  }, [idStruttura, idEvento, reloadNeeded]);
 
   const isLoading = () => {
     return fetchInProgress;
@@ -122,52 +146,100 @@ export default (props) => {
     return dt + "/" + month + "/" + year + " - " + hh + ":" + mm;
   }
 
+  async function handleChange(idAppuntamento, event) {
+    let presence = event.target.checked;
+    _logger.debug(
+      `subscriberlist->handleChange( ${idStruttura}, ${idEvento},${idAppuntamento}, ${presence},)`
+    );
+    await StruttureEventiAPI.PresenzaEventoAsync(
+      idStruttura,
+      idEvento,
+      idAppuntamento,
+      presence
+    );
+    _logger.debug(`subscriberlist->handleChange()->invoked`);
+  }
+
+  async function handleDelete(idAppuntamento) {
+    _logger.debug(
+      `subscriberlist->handleDelete( ${idStruttura}, ${idEvento},${idAppuntamento})`
+    );
+    await StruttureEventiAPI.AnnullaPrenotazioneByAdminAsync(
+      idStruttura,
+      idEvento,
+      idAppuntamento
+    );
+    _logger.debug(`subscriberlist->handleDelete()->invoked`);
+    _logger.debug(`subscriberlist->handleDelete(): setReloadNeeded = true`);
+    setReloadNeeded(true);
+  }
+
   function renderClienti() {
     if (appuntamenti && appuntamenti.length > 0) {
       return (
-        <TableContainer style={{padding:"12px", width: 'auto'}}>
+        <TableContainer style={{ padding: "12px", width: "auto" }}>
           <Table className={classes.table} aria-label="Elenco locations">
             <TableHead>
               <TableRow>
-                <StyledTableCell>Nome Struttura</StyledTableCell>
-                <StyledTableCell align="center">Nome Lezione</StyledTableCell>
+                <StyledTableCell>Nome</StyledTableCell>
                 <StyledTableCell align="center">
-                  Data e Ora Lezione
+                  Tipo Abbonamento
                 </StyledTableCell>
-                <StyledTableCell align="center">Stato Lezione</StyledTableCell>
-                <StyledTableCell align="right">Impostazioni</StyledTableCell>
+                <StyledTableCell align="center">
+                  Data e Ora Prenotazione
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  Stato Certificato
+                </StyledTableCell>
+                <StyledTableCell align="right">Presenza</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {appuntamenti.map((m) => (
                 <TableRow key={m.id}>
                   <StyledTableCell component="th" scope="row">
-                    {m.ragioneSocialeCliente}
+                    {m.user.displayName}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {m.schedule.title}
+                    {m?.nomeAbbonamento}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {dateFormat(parseISO(m.schedule.dataOraInizio))}
+                    {dateFormat(parseISO(m.dataCreazione))}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {m.dataCancellazione
-                      ? "Cancellata"
-                      : Date.parse(parseISO(m.schedule.dataOraInizio)) >
-                        Date.parse(new Date())
-                      ? "Attiva"
-                      : "Passata"}
+                    {m?.statoCertificato}
                   </StyledTableCell>
                   <StyledTableCell align="right">
-                    <Fab
-                      size="small"
-                      variant="round"
-                      className={classes.FAB}
-                      component={Link}
-                      to={`/${m.urlRoute}/`}
-                    >
-                      <MenuIcon style={{ color: "white" }} />
-                    </Fab>
+                    {differenceInMinutes(new Date(), new Date(removable)) <=
+                    5 ? (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        className={classes.btnDelete}
+                        onClick={(event) => {
+                          handleDelete(m.id);
+                        }}
+                      >
+                        ELIMINA
+                      </Button>
+                    ) : (
+                      <FormControl>
+                        <FormControlLabel
+                          style={{ margin: "0px" }}
+                          control={
+                            <Switch
+                              name="presenza"
+                              checked={m?.presente}
+                              value={m?.presente}
+                              onChange={(event) => {
+                                handleChange(m.id, event);
+                              }}
+                            />
+                          }
+                        />
+                      </FormControl>
+                    )}
                   </StyledTableCell>
                 </TableRow>
               ))}
@@ -179,7 +251,7 @@ export default (props) => {
       return (
         <Box className={classes.box}>
           <Typography component="div" variant="h6">
-            Non stai ancora seguendo nessuna struttura
+            Nessun abbonato ancora
           </Typography>
           <SentimentDissatisfiedIcon />
         </Box>
@@ -191,7 +263,7 @@ export default (props) => {
     <Paper className={classes.root}>
       <Grid container spacing={3} className={classes.grid}>
         <Grid item xs={12} md={1}>
-          <Button className={classes.headerButton}>STORICO</Button>
+          {/* <Button className={classes.headerButton}>STORICO</Button> */}
         </Grid>
         <Grid item xs={12} md={10}>
           <Grid
@@ -202,13 +274,15 @@ export default (props) => {
           >
             <Grid item xs={12}>
               <Typography className={classes.title} align="center" variant="h5">
-                I Mie Prenotazioni
+                Lista Iscritti
               </Typography>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} md={1}>
-          <InfoIcon style={{ fontSize: 40, color: "grey", float: "right" }}></InfoIcon>
+          <InfoIcon
+            style={{ fontSize: 40, color: "grey", float: "right" }}
+          ></InfoIcon>
         </Grid>
       </Grid>
       {isLoading() ? <R2DLoader /> : renderClienti()}

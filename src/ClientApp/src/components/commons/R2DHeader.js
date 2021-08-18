@@ -101,7 +101,7 @@ export default function R2DHeader() {
                 <MenuItem>
                     <ListItemIcon className={classes.headerMenuItem}>
                         <span>
-                        <FavoriteIcon /> I MIEI PREFERITI
+                        <FavoriteIcon /> <NavLink to="/me/abbonamenti">I MIEI ABBONAMENTI</NavLink>
                         </span>
                     </ListItemIcon>
                 </MenuItem>

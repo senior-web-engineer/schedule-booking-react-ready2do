@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     padding: "15px",
   },
+  headerButton: {
+    backgroundColor: "grey",
+    color: "white",
+  },
   box: {
     padding: "15px",
     textAlign: "center",
@@ -154,7 +158,7 @@ export default (props) => {
   function renderClienti() {
     if (clienti && clienti.length > 0) {
       return (
-        <TableContainer style={{padding:"12px", width: 'auto'}}>
+        <TableContainer style={{ padding: "12px", width: "auto" }}>
           <Table className={classes.table} aria-label="Elenco locations">
             <TableHead>
               <TableRow>
@@ -224,7 +228,9 @@ export default (props) => {
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={12} md={1}></Grid>
+        <Grid item xs={12} md={1}>
+          <Button className={classes.headerButton}>STORICO</Button>
+        </Grid>
         <Grid item xs={12} md={10}>
           <Grid
             container
@@ -240,7 +246,9 @@ export default (props) => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={1}>
-          <InfoIcon style={{ fontSize: 40, color: "grey", float: "right" }}></InfoIcon>
+          <InfoIcon
+            style={{ fontSize: 40, color: "grey", float: "right" }}
+          ></InfoIcon>
         </Grid>
       </Grid>
       {isLoading() ? <R2DLoader /> : renderClienti()}

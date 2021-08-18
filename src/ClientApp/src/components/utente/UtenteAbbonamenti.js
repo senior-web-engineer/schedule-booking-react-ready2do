@@ -17,7 +17,7 @@ import startOfDay from "date-fns/startOfDay";
 import { UtentePrenotazioniFilter } from "./UtentePrenotazioneFilter";
 // import CustomFooter from "./CustomFooter";
 
-const _logger = log.getLogger("UtentePrenotazioni");
+const _logger = log.getLogger("UtenteAbbonamenti");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const UtentePrenotazioni = (props) => {
+export const UtenteAbbonamenti = (props) => {
   const classes = useStyles();
   //Destinato a contenere la lista dei valori per cui filtrare per ciascuna colonna
   const [filters, setFilters] = React.useState({
@@ -68,7 +68,7 @@ export const UtentePrenotazioni = (props) => {
         ? formatDateString(addDays(filters.to, 1))
         : "20300101000000";
       _logger.debug(
-        `utenteprenotazioni->fetchAppuntamenti API call: ${filters?.text}`
+        `UtenteAbbonamenti->fetchAppuntamenti API call: ${filters?.text}`
       );
       const data = await UsersAPI.GetCurrentUserAppuntamentiAsync(
         startDateISO,
@@ -258,7 +258,7 @@ export const UtentePrenotazioni = (props) => {
     return (
       <Fragment>
         <Typography variant="h6" style={{ margin: "10px", padding: "10px" }}>
-          Le mie Prenotazioni
+          Le mie Abbonamenti
         </Typography>
         <R2DLoader />
       </Fragment>
@@ -269,7 +269,7 @@ export const UtentePrenotazioni = (props) => {
     return (
       <Fragment>
         <Typography variant="h6" style={{ margin: "10px", padding: "10px" }}>
-          Le mie Prenotazioni
+          Le mie Abbonamenti
         </Typography>
 
         <MUIDataTable

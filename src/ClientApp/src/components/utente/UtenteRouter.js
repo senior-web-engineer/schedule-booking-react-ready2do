@@ -7,7 +7,7 @@ import { authProvider } from '../../authProvider'
 import UtenteLayout from './UtenteLayout';
 import UtenteProfilo from './UtenteProfilo';
 import {UtentePrenotazioni} from './UtentePrenotazioni';
-
+import {UtenteAbbonamenti} from './UtenteAbbonamenti'
 const _logger = log.getLogger('UtenteRouter');
 
 
@@ -24,6 +24,11 @@ export default (props) => {
                 <Route exact path={`/me/profilo`}>
                     <AzureAD forceLogin provider={authProvider} reduxStore={getStore()} >
                         <UtenteProfilo />
+                    </AzureAD>
+                </Route>
+                <Route exact path={`/me/abbonamenti`}>
+                    <AzureAD forceLogin provider={authProvider} reduxStore={getStore()} >
+                        <UtenteAbbonamenti />
                     </AzureAD>
                 </Route>
                 <Route exact path={`/me/prenotazioni`}>
