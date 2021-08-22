@@ -80,14 +80,15 @@ switch(action.type){
             }
         case StuttureActionTypes.STRUTTURA_CHANGE_IMAGE_SUCCESS:{
             const idImage = action.payload.id;
+            _logger.debug(`Reducer for ${action.type} - ACTION: ${JSON.stringify(action)}`);
             //Verifichiamo se l'immagine modificata esisteva già, in caso affermativo andiamo a sovrascrivere la vecchia, 
             //altrimenti ne aggiungiamo una nuova
             const indexExistingImage = state.images.findIndex((elem)=>elem.id === idImage);
             const newState = produce(state, draftState=>{
                 if(indexExistingImage >= 0){
-                    draftState.images[indexExistingImage] = action.payload;
+                    draftState.images[indexExistingImage] = action.payload.value;
                 }else{
-                    draftState.images.push(action.payload);
+                    draftState.images.push(action.payload.value);
                 }
             });
             return newState;

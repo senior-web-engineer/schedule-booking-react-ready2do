@@ -1,6 +1,6 @@
 import axios from 'axios';
 import config from '../config'
-//import {APIUtils} from './apiUtils'
+import {APIUtils} from './apiUtils'
 import * as log from 'loglevel'
 import {STRUTTURE_API_IMAGES_MOCKED} from './strutture.images.api.mock'
 
@@ -13,7 +13,7 @@ const _logger = log.getLogger('strutture.images.api');
  * @param {*} blobImage 
  * @param {*} imageKey 
  */
-function UpdateStrutturaImage(idStruttura, tipoImmagine, blobImage, imageKey, ordinamento, token){
+async function UpdateStrutturaImage(idStruttura, tipoImmagine, blobImage, imageKey, ordinamento, token){
     const url = `${config.BaseAPIPath}/clienti/${idStruttura}/images/upload`;
     _logger.debug(`Invoking API: [POST] ${url} - tipoImmagine: ${tipoImmagine}, imageKey: ${imageKey}`);
     let formData = new FormData();
@@ -21,24 +21,26 @@ function UpdateStrutturaImage(idStruttura, tipoImmagine, blobImage, imageKey, or
     formData.append("TipoImmagine", tipoImmagine);
     formData.append("File",blobImage);
     formData.append("Ordinamento",ordinamento);
-    const response = axios.post(url, formData,{
-        headers:{
-            'Content-Typep': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-        }
-    })
+    // const response = axios.post(url, formData,{
+    //     headers:{
+    //         'Content-Typep': 'multipart/form-data',
+    //         'Authorization': `Bearer ${token}`
+    //     }
+    // })
+    const response = axios.post(url, formData, await APIUtils.addBearerToken())
     return response;    
 }
 
-function RemoveStrutturaImage(idStruttura, imageKey, token){
+async function RemoveStrutturaImage(idStruttura, imageKey, token){
     const url = `${config.BaseAPIPath}/clienti/${idStruttura}/images/${imageKey}`;
     _logger.debug(`Invoking API: [DELETE] ${url}`);
-    const response = axios.delete(url, {
-        headers:{
-            'Content-Typep': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-        }
-    })
+    // const response = axios.delete(url, {
+    //     headers:{
+    //         'Content-Typep': 'multipart/form-data',
+    //         'Authorization': `Bearer ${token}`
+    //     }
+    // })
+    const response = axios.delete(url, await APIUtils.addBearerToken())
     return response;
 }
 

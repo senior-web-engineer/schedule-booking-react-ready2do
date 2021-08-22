@@ -1,7 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
 import * as log from "loglevel";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import ReactCrop from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 import { Button, Paper } from "@material-ui/core";
 import GridList from "@material-ui/core/GridList";
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,10 +28,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "20px",
   },
   text: {
-	float: "right", 
-	display: "flow-root", 
-	width: "150px", 
-	marginTop: '10px'
+    float: "right",
+    display: "flow-root",
+    width: "150px",
+    marginTop: "10px",
   },
   gridList: {
     width: "100%",
@@ -37,11 +39,11 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     float: "left",
-	border: '1px solid',
-	height: '400px',
-	minWidth: '400px',
-	margin: '10px',
-	maxWidth: '700px'
+    border: "1px solid",
+    height: "400px",
+    minWidth: "400px",
+    margin: "10px",
+    maxWidth: "700px",
   },
   inputFile: {
     display: "none",
@@ -49,10 +51,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     padding: "5px",
     background: "grey",
-	color: 'white',
-	fontSize: '12px',
-	margin: '10px 0px',
-	width: 'inherit'
+    color: "white",
+    fontSize: "12px",
+    margin: "10px 0px",
+    width: "inherit",
     // width: '100px',
   },
 }));
@@ -62,6 +64,13 @@ export default (props) => {
   const images = useSelector(StruttureSelectors.getImages);
   const idStruttura = props.idStruttura;
   const [newImage, setNewImage] = useState({});
+
+  const [upImg, setUpImg] = useState();
+  const imgRef = useRef(null);
+  const previewCanvasRef = useRef(null);
+  const [crop, setCrop] = useState({ unit: "%", width: 30, aspect: 16 / 9 });
+  const [completedCrop, setCompletedCrop] = useState(null);
+
   const [file, setFile] = useState({});
   const inputFile = useRef(null);
   const dispatch = useDispatch();
@@ -71,65 +80,89 @@ export default (props) => {
     _logger.debug(arguments);
   }
 
-  const handleImageSaveClick = (e) => {
-  	e.preventDefault();
-  	let reader = new FileReader();
-  	// let file = e.target.files[0];
-  	reader.onloadend = () => {
-  	//   setFile(file);
-  	  handleImageUpload(file, null);
-  	};
-  	reader.readAsDataURL(file);
-    };
+  const handleImageSaveClick = (canvas, crop) => {
+    // e.preventDefault();
+    if (!crop || !canvas) {
+      return;
+    }
+    canvas.toBlob(
+      (blob) => {
+        let blobFile = new File([blob], "fileName.jpg", { type: "image/jpeg" });
+        handleImageUpload(blobFile, null);
+      },
+      "image/png",
+      1
+    );
+    // let reader = new FileReader();
+    // // let file = e.target.files[0];
+    // reader.onloadend = () => {
+    // //   setFile(file);
+    //   handleImageUpload(file, null);
+    // };
+    // reader.readAsDataURL(file);
+  };
 
   const handleImageUploadClick = (e) => {
     inputFile.current.click();
   };
 
-  const fileChangedHandler = (event) => {
-    var fileInput = false;
-    if (event.target.files[0]) {
-      fileInput = true;
-    }
-    if (fileInput) {
-      try {
-        Resizer.imageFileResizer(
-          event.target.files[0],
-          1000,
-          400,
-          "JPEG",
-          100,
-          0,
-          (uri) => {
-            console.log(uri);
-            setNewImage(uri);
-			setFile(event.target.files[0]);
-          },
-          "base64",
-          500,
-          400
-        );
-      } catch (err) {
-        console.log(err);
-      }
+  // react-image-file-resizer version
+  // const fileChangedHandler = (event) => {
+  //   var fileInput = false;
+  //   if (event.target.files[0]) {
+  //     fileInput = true;
+  //   }
+  //   if (fileInput) {
+  //     try {
+  //       Resizer.imageFileResizer(
+  //         event.target.files[0],
+  //         1000,
+  //         400,
+  //         "JPEG",
+  //         100,
+  //         0,
+  //         (uri) => {
+  //           setNewImage(uri);
+  // 		setFile(event.target.files[0]);
+  //         },
+  //         "base64",
+  //         500,
+  //         400
+  //       );
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  // };
+
+  // react-image-crop version
+  const fileChangedHandler = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => setUpImg(reader.result));
+      reader.readAsDataURL(e.target.files[0]);
     }
   };
 
-    const handleImageUpload = (file, url) => {
-      const action = StruttureActionsCreator.updateStrutturaImmagine({
-        file: file,
-        imageKey: -1,
-        imageType: 'gallery',
-        imageUrl: file ? null : url, //l'url lo carichiamo solo se non stiamo facendo l'upload di una nuova immagine
-        imageOrder: -1,
-      });
-      _logger.debug(
-        `ImageGalleryEdit->Upload immagine  - Dispatching action: ${JSON.stringify(
-          action
-        )}`
-      );
-      dispatch(action);
-    };
+  const onLoad = useCallback((img) => {
+    imgRef.current = img;
+  }, []);
+
+  const handleImageUpload = (file, url) => {
+    const action = StruttureActionsCreator.updateStrutturaImmagine({
+      file: file,
+      imageKey: -1,
+      imageType: "gallery",
+      imageUrl: file ? null : url, //l'url lo carichiamo solo se non stiamo facendo l'upload di una nuova immagine
+      imageOrder: -1,
+    });
+    _logger.debug(
+      `ImageGalleryEdit->Upload immagine  - Dispatching action: ${JSON.stringify(
+        action
+      )}`
+    );
+    dispatch(action);
+  };
 
   useEffect(() => {
     _logger.debug("StrutturaEditImages->useEffect()");
@@ -155,6 +188,39 @@ export default (props) => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idStruttura]);
+
+  useEffect(() => {
+    if (!completedCrop || !previewCanvasRef.current || !imgRef.current) {
+      return;
+    }
+
+    const image = imgRef.current;
+    const canvas = previewCanvasRef.current;
+    const crop = completedCrop;
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    const ctx = canvas.getContext("2d");
+    const pixelRatio = window.devicePixelRatio;
+
+    canvas.width = crop.width * pixelRatio * scaleX;
+    canvas.height = crop.height * pixelRatio * scaleY;
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = "high";
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width * scaleX,
+      crop.height * scaleY
+    );
+  }, [completedCrop]);
 
   const resolveTipoImmagine = (idTipo) => {
     switch (idTipo) {
@@ -190,7 +256,9 @@ export default (props) => {
             ></ImageGalleryEdit>
           );
         })}
-        <ImageGalleryEdit></ImageGalleryEdit>
+        <ImageGalleryEdit
+          imageUploadClick={handleImageUploadClick}
+        ></ImageGalleryEdit>
       </GridList>
     );
   };
@@ -204,24 +272,45 @@ export default (props) => {
 				imgExtension={['.jpg', '.gif', '.png']}
 				maxFileSize={5242880}
 			/> */}
-      <div className={classes.root} >
-        <img src={newImage} className={classes.image} alt="" />
+      <div className={classes.root}>
+        {/* <img src={newImage} className={classes.image} alt="" /> */}
+        <ReactCrop
+          src={upImg}
+          className={classes.image}
+          onImageLoaded={onLoad}
+          crop={crop}
+          onChange={(c) => setCrop(c)}
+          onComplete={(c) => setCompletedCrop(c)}
+        />
+        <canvas
+          ref={previewCanvasRef}
+          // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+          style={{
+            display: "none",
+          }}
+        />
         <div className={classes.text}>
           <Typography>Carica o cambia la tua immagine di profilo</Typography>
-		  <br/>
-          <Button className={classes.button}
-		  onClick={handleImageUploadClick}>
-            <CloudUploadIcon style={{ color: "white", marginRight: '5px' }}></CloudUploadIcon>
+          <br />
+          <Button className={classes.button} onClick={handleImageUploadClick}>
+            <CloudUploadIcon
+              style={{ color: "white", marginRight: "5px" }}
+            ></CloudUploadIcon>
             CARICA IMMAGINE
           </Button>
-          <Button className={classes.button}
-		  onClick={handleImageSaveClick}>
-            <SaveIcon style={{ color: "white" , marginRight: '5px'}}></SaveIcon> SALVA
+          <Button
+            className={classes.button}
+            onClick={() =>
+              handleImageSaveClick(previewCanvasRef.current, completedCrop)
+            }
+          >
+            <SaveIcon style={{ color: "white", marginRight: "5px" }}></SaveIcon>{" "}
+            SALVA
           </Button>
           <input
             type="file"
             accept="image/*"
-			ref={inputFile}
+            ref={inputFile}
             className={classes.inputFile}
             autoComplete="false"
             onChange={fileChangedHandler}

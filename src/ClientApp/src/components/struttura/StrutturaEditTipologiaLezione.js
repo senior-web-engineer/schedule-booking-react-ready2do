@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import log from 'loglevel';
 import React, { useState, useEffect } from 'react'
 import { Formik, Form, Field, ErrorMessage } from 'formik';

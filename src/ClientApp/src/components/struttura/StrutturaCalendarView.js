@@ -111,12 +111,11 @@ export default (props) => {
                 initialView="timeGridWeek"
                 initialDate={periodo.startDate}
                 plugins={[dayGridPlugin, interactionPlugin]}
-                // headerToolbar={{
-                //     left: 'today',
-                //     center: 'title',
-                //     right: 'prev,next'
-                // }}
-                headerToolbar={false}
+                headerToolbar={{
+                    left: 'today',
+                    center: 'title',
+                    right: 'prev,next'
+                }}
                 locale={itLocale}
                 weekends={true}
                 slotDuration="01:00:00"

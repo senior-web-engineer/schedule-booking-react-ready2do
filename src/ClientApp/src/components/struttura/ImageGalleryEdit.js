@@ -107,6 +107,7 @@ const ImageGalleryEdit = (props) => {
   const imageKey = props.imageKey ?? -1;
   const imageOrder = props.order ?? 0;
   const imageType = props.imageType ?? 3;
+  const imageUploadClick = props.imageUploadClick;
   const [imageUrl, setImageUrl] = useState(props.imageUrl);
   const [file, setFile] = useState({});
   const classes = useStyles();
@@ -285,7 +286,8 @@ const ImageGalleryEdit = (props) => {
         <p style={{ margin: "15px 0 0 0" }}>NUOVA IMMAGINE</p>
         <InfoIcon className={classes.icon}></InfoIcon>
         <AddCircleOutlineIcon
-          style={{ fontSize: 100, color: "grey" }}
+          style={{ fontSize: 100, color: "grey", cursor: "pointer" }}
+          onClick={props.imageUploadClick}
         ></AddCircleOutlineIcon>
       </div>
       <div className={classes.topTitle}>

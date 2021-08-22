@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import log from 'loglevel';
 import React, { useEffect, useState, Fragment } from 'react'
 

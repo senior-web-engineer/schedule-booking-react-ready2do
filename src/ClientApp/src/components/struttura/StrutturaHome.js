@@ -119,7 +119,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px",
     borderRadius: "0px",
     boxShadow: "none",
-    border: "1px solid",
   },
 
   mapContainer: {
@@ -129,7 +128,6 @@ const useStyles = makeStyles((theme) => ({
     float: "left",
     borderRadius: "0px",
     boxShadow: "none",
-    border: "1px solid",
   },
 
   addressContainer: {
